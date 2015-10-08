@@ -18,7 +18,11 @@ DEPS_FILES = $(patsubst src/%.c,build/%.d,$(SOURCE_FILES))
 # * Commands
 #############################################################
 .PHONY: all
-all: bin/test_sort bin/measure_sort bin/dutch_national_flag
+all: \
+	bin/test_sort \
+	bin/measure_sort \
+	bin/dutch_national_flag \
+	bin/horner \
 
 .PHONY: clean
 clean:
