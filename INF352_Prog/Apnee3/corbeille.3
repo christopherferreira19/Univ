@@ -1,0 +1,212 @@
+#!/bin/bash
+
+CORBEILLE="$HOME/.corbeille"
+CORBEILLE_INDEX="$CORBEILLE/index"
+
+mkdir -p $CORBEILLE
+touch $CORBEILLE_INDEX
+
+echo_err() {
+    echo "$@" 1>&2
+}
+
+# Pour chaque contenu de fichier présent dans la corbeille
+# on vérifie qu'il soit présent dans l'index
+# à défaut on le supprime
+sync_index_fichiers() {
+    for file in "$CORBEILLE"/*; do
+        if [ -f "$file" -a "$file" != $CORBEILLE_INDEX ]; then
+            if ! grep ":$(basename $file):" "$CORBEILLE_INDEX" >/dev/null 2>&1; then
+                rm $file
+            fi
+        fi
+    done
+}
+
+# Etant donné une liste d'éléments
+# Demande à l'utilisateur d'en choisir un et
+# retourne son indice en tant que 'exit status'
+choix_entree() {
+    compte=0
+    for entree in "$@"; do
+        compte=$(expr $compte + 1)
+        echo -n "$compte - "
+        info_un "$entree"
+    done
+    choix $compte
+}
+ 
+choix_fichier() {
+    compte=0
+    for fichier in "$@"; do
+        compte=$(expr $compte + 1)
+        echo "$compte - $fichier"
+    done
+    choix $compte
+}
+
+choix() {
+    while true; do
+        read -p "Choissisez [1-$1] ou [A]nnuler : " choix
+        if [ "$choix" == "A" ]; then
+            return 0;
+        elif [ "$choix" -ge 1 -a "$choix" -le "$1" ]; then
+            return "$choix";
+        fi
+    done
+}
+
+efface() {
+    if [ $# -eq 0 ]; then
+        echo_err "Argument manquant: Indiquez au moins un nom de fichier à effacer !"
+    else
+        for arg in "$@"; do
+            fichiers=$(find -type f -name "$arg")
+            if [ -z "$fichiers" ]; then
+                echo_err "L'argument '$arg' ne correpond pas à aucun fichier."
+            elif [ $(echo "$fichiers" | wc -l) -eq 1 ]; then
+                efface_un "$(readlink -e $fichiers)"
+            else
+                choix_fichier $fichiers
+                efface_un $(readlink -e $(echo "$fichiers" | sed -n "${choix}p"))
+            fi
+        done
+    fi
+}
+
+efface_un() {
+    hash=$(md5sum $1 | cut -d" " -f1)
+    date=$(date +'%s')
+
+    echo "$1:$hash:$date" >> "$CORBEILLE_INDEX"
+    mv "$1" "$CORBEILLE/$hash"
+}
+
+restaure() {
+    if [ $# -eq 0 ]; then
+        echo_err "Argument manquant: Indiquez au moins un nom de fichier à restaurer !"
+    else
+        for arg in "$@"; do
+            entrees=$(grep "^[^:]\+$arg:" "$CORBEILLE_INDEX")
+            compte=$(echo "$entrees" | wc -l)
+            if [ $compte -eq 0 ]; then
+                echo_err "Le fichier $arg n'existe pas dans la corbeille"
+            elif [ $compte -eq 1 ]; then
+                restaure_un "$entrees"
+            else
+                choix_entree $entrees
+                choix=$?
+                if [ $choix -gt 0 ]; then
+                    restaure_un $(echo "$entrees" | sed -n "${choix}p")
+                fi
+            fi
+        done
+    fi
+}
+
+restaure_un() {
+    chemin=$(echo "$1" | cut -d":" -f1)
+    hash=$(echo "$1" | cut -d":" -f2)
+    if [ -f "$chemin" ]; then
+        echo_err "Impossible de restaurer le fichier $chemin, le fichier existe déjà"
+    else
+        mkdir -p $(dirname "$chemin")
+        grep -v "^$1$" "$CORBEILLE_INDEX" > "$CORBEILLE_INDEX.tmp" 2>/dev/null
+        mv -f "$CORBEILLE_INDEX.tmp" "$CORBEILLE_INDEX"
+        cp "$CORBEILLE/$hash" "$chemin"
+        sync_index_fichiers
+    fi
+}
+
+info() {
+    if [ $# -eq 0 ]; then
+        for entree in $(tac ~/.corbeille/index); do
+            info_un "$entree"
+        done
+    else
+        for arg in "$@"; do
+            fichier=$(readlink -m "$arg")
+            entree=$(grep "^$fichier:" "$CORBEILLE_INDEX")
+            if [ $? -eq 0 ]; then
+                info_un "$entree"
+            else
+                echo_err "Le fichier $arg n'existe pas dans la corbeille"
+            fi
+        done
+    fi
+}
+
+info_un() {
+    chemin=$(echo $entree | cut -d":" -f1)
+    hash=$(echo $entree | cut -d":" -f2)
+    date=$(echo $entree | cut -d":" -f3)
+    datef=$(date -d @$date +"%x %X")
+    echo "$datef $chemin $hash"
+}
+
+vide() {
+    if [ $# -eq 0 ]; then
+        for entree in $(cat ~/.corbeille/index); do
+            vide_un "$entree"
+        done
+    else
+        for arg in "$@"; do
+            chemin=$(readlink -m "$arg")
+            entrees=$(grep "^$chemin:" "$CORBEILLE_INDEX")
+            if [ $? -ne 0 ]; then
+                echo_err "Le fichier $arg n'existe pas dans la corbeille"
+            elif [ $(echo "$entrees" | wc -l) -eq 1 ]; then
+                vide_un "$entrees"
+            else
+                choix_entree $entrees
+                choix=$?
+                if [ $choix -gt 0 ]; then
+                    vide_un $(echo "$entrees" | sed -n "${choix}p")
+                fi
+            fi
+        done
+    fi
+}
+
+vide_un() {
+    grep -v "^$1$" "$CORBEILLE_INDEX" > "$CORBEILLE_INDEX.tmp" 2>/dev/null
+    mv -f "$CORBEILLE_INDEX.tmp" "$CORBEILLE_INDEX"
+    sync_index_fichiers
+}
+
+commande=$1
+shift
+
+case $commande in
+    e|efface)
+        efface "$@"
+        ;;
+    r|restaure)
+        restaure "$@"
+        ;;
+    i|info)
+        info "$@"
+        ;;
+    v|vide)
+        vide "$@"
+        ;;
+    *)
+        cat <<HD
+Utilisation
+    $0 e[fface]|r[estaure]|i[nfo]|v[ide] [fichiers...]
+
+Commandes
+    efface fichiers...
+        Efface les fichiers passées en arguments
+    restaure fichiers...
+        Restaure les fichiers passées en arguments
+    info [fichiers...]
+        Affiche les informations des fichiers passées en arguments
+        ou de tous les fichiers sans arguments
+    vide [fichiers...]
+        Supprime les fichiers passées en arguments ou vide
+        entièrement la corbeille sans arguments
+
+HD
+        ;;
+esac

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+rm -rf ~/.corbeille
+rm -rf test
+mkdir -p test
+
+echo 'abc' > test/1 && echo 'def' > test/2 && echo 'abc' > test/3
+./corbeille efface 1 2 3
+
+touch test/1
+mkdir test/2
+touch test/2/1
+./corbeille e 1

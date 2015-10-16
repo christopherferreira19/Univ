@@ -1,0 +1,17 @@
+#!/bin/bash
+
+CORBEILLE="$HOME/.corbeille"
+
+mkdir -p "$CORBEILLE"
+
+echo_err() {
+    echo "$@" 1>&2
+}
+
+for file in "$@"; do
+	if [ -f "$file" ]; then
+		mv "$file" "$CORBEILLE/$file"
+	else
+		echo_err "L'argument '$file' ne correpond pas à un fichier."
+	fi
+done
