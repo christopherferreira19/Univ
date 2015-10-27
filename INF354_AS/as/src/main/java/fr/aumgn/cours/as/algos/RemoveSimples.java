@@ -27,6 +27,7 @@ public class RemoveSimples {
                 }
             }
         }
+
         return flattenSimpleGraph;
     }
 

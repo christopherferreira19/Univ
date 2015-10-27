@@ -8,12 +8,13 @@ import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Verify.verify;
 
 public class Symboles implements Iterable<Symbole> {
 
+    private static final Symboles EPSILON = new Symboles(ImmutableList.of(Terminal.epsilon()));
+
     public static Symboles epsilon() {
-        return new Symboles(ImmutableList.of(Terminal.epsilon()));
+        return EPSILON;
     }
 
     public static Symboles of(Symbole... symboles) {
@@ -21,8 +22,9 @@ public class Symboles implements Iterable<Symbole> {
     }
 
     public static Symboles of(Iterable<? extends Symbole> iterable) {
-        verify(!Iterables.isEmpty(iterable));
-        return new Symboles(ImmutableList.copyOf(iterable));
+        return Iterables.isEmpty(iterable)
+                ? epsilon()
+                : new Symboles(ImmutableList.copyOf(iterable));
     }
 
     public static Symboles of(String str) {
@@ -64,6 +66,10 @@ public class Symboles implements Iterable<Symbole> {
 
     public int size() {
         return list.size();
+    }
+
+    public boolean isEpsilon() {
+        return this == epsilon();
     }
 
     @Override
