@@ -23,6 +23,7 @@ all: \
 	bin/measure_sort \
 	bin/dutch_national_flag \
 	bin/horner \
+	bin/fibonnacci
 
 .PHONY: clean
 clean:
