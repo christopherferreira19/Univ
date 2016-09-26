@@ -1,0 +1,63 @@
+/* -------- Groupe 1 -------- */
+	Blevin Daniel
+	Chelle Lea
+	Daoud Marwa
+	Ferreira Christopher
+	Sazerat Jeremy
+/* -------- Groupe 1 -------- */
+
+Tests Automatiques:
+	Pour les tests de lecture d'un fichier ELF nous avons choisi d'utiliser la libelf (v0.158).
+	Pour chaque élément testé, nous utilisons d'une part nos fonctions de lecture et d'autre part les fonctions de lecture de la libelf.
+	On compare ensuite le résultat obtenu par notre implémentation avec celui obtenu à l'aide de la libelf.
+	Liste des éléments testés :
+		- Ouverture (format, endianness...).
+		- Header.
+		- Headers des sections.
+		- Contenu de la section symbols.
+		- Contenu des headers de relocations.
+		- Chargement des bonnes chaines de caractères (symbols, ...).
+
+Test de Lecture du contenu des sections de Relocations:
+	La lecture des champs r_offset, et r_info obtenue à l'aide de la fonction gelf_getrel de la libelf provoque des erreurs non résolues.
+	En conséquence les tests des champs r_offset et r_info des relocations sont hardcodés et comparés avec les valeurs obtenues à l'aide de l'exécutable readelf.
+
+
+Test Arguments (Relocation):
+	Objectif: Aucune precision d'adresses pour les sections (pas d'utilisation de -s)
+	Lancement: 	bin/elf_relocation -e ENTREE SRC DST
+	Resultats: Lève un warning prevenant l'utilisateur d'une allocation memoire a partir de la première adresse libre.
+
+	Objectif: Precision d'une partie des sections (Utilisation de -s limitee)
+	Lancement:	bin/elf_relocation -e ENTREE -s SEC=ADDR SRC DST		#Avec une seule section precisée
+	Resultats: Lève un warning prevenant l'utilisateur d'une allocation mémoire à partir de la première adresse libre.
+
+	Objectif: Omission du point d'entree (pas de -e)
+	Lancement:	bin/elf_relocation [-s SEC=ADDR] SRC DST
+	Resultats: Affiche un message d'erreur precis.
+
+	Objectif: Double point d'entrée
+	Lancement:	bin/elf_relocation -e ENTREE -e ENTREE2 SRC DST
+	Resultats: Affiche un message d'erreur precis.
+
+	Objectif: Omission SRC ou/et DEST
+	Lancement:	bin/elf_relocation [OPTIONS]
+	Resultats: Affiche un message d'erreur precis.
+
+	Objectif: Redondance des sections. Si une section est precisee plusieurs fois
+	Lancement:	bin/elf_relocation -e ENTREE -s .text=ADDR1 -s.text=ADDR2 SRC DEST		#ADDR1 = | != ADDR2
+	Resultats: Place la section sur ADDR1 et ignore la redondance.
+
+	Objectif: Placement de sections a une meme adresse
+	Lancement:	bin/elf_relocation -e ENTREE -s .text=0x1000 -s .data=0x1000 SRC DEST
+	Resultats: Message d'erreur
+
+	Objectif: Placement d'une section sur une autre:
+	Lancement: bin/elf_relocation -e ENTREE -s .text=0x1000 -s .data=0x1001 SRC DEST		#Avec .text non vide
+	Resultats: Mesage d'erreur
+
+Test du simulateur
+	Comparaison des traces obtenues lors du chargement d'exécutable obtenu à partir de l'édition de liens de plusieurs *.o issue :
+		- D'une relocation par notre exécutable elf_relocation.
+		- D'une relocation par ed (elfutils).
+	Une erreur est levée en cas de traces différentes.

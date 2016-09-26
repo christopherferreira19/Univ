@@ -1,0 +1,59 @@
+/* -------- Groupe 1 -------- */
+	Blevin Daniel
+	Chelle Lea
+	Daoud Marwa
+	Ferreira Christopher
+	Sazerat Jeremy
+/* -------- Groupe 1 -------- */
+
+elf_common
+	Définit une structure locale d'un fichier ELF.
+	Permet, par exemple, de modifier un fichier ELF sans modifier la source.
+
+endianess_aware_io
+	Corrige les problèmes de lecture dûs aux Endians.
+
+elf_read
+	Définit différentes fonctions pour recuperer le contenu d'un fichier ELF - Fonctions du parser ELF.
+
+elf_print
+	Permet l'affichage d'un fichier ELF
+
+elf_reader
+	Corps principal du programme pour la lecture d'un fichier ELF.
+	Execute différentes fonctions de elf_read pour récuperer, afficher et libérer une structure ELF codée dans elf_struct. (parser ELF)
+
+elf_rel_args
+	Défini des structures de données et traitements spécifiques au arguments du binaire elf_relocation.
+
+elf_relocate
+	Contient différentes fonctions réalisant la réimplantation d'un fichier ELF.
+
+elf_relocate_arm
+	Contient différentes fonctions réalisant la réimplantation des instructions spécifiques à ARM.
+
+elf_write
+	Permet d'écrire dans un fichier les données de l'ELF.
+
+elf_relocation
+	Corps principal du programme pour la réimplantation d'un fichier ELF.
+	Execute différentes fonctions de elf_relocate pour réimplanter un fichier ELF.
+
+arm_runner
+	Client se connectant au serveur (simulateur fourni par les enseignants).
+	Réalise le travail de chargement du programme (Ecriture des sections dans différentes adresses du simulateur).
+
+test_lib
+	Définit différentes fonctions communes pour les tests.
+
+test_read
+	Définit les fonctions de test pour la lecture
+
+test_relocate
+	Définit les fonctions de test pour la réimplantation
+
+test_relocate
+	Définit les fonctions de test pour la réimplantation des instructions spécifiques à ARM
+
+test_runner
+	Corps principal du programme de test.

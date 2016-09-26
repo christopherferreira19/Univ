@@ -1,0 +1,9 @@
+*.zip
+build/*.o
+build/*.d
+minishell
+Makefile
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+.nfs*

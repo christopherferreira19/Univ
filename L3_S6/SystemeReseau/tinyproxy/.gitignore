@@ -1,0 +1,16 @@
+*.zip
+build/*.o
+build/*.d
+minishell
+Makefile
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+.nfs*
+.idea
+logs.txt
+field.txt
+trash.c
+out/
+filterConfigTEMP.txt
+valid_config_update

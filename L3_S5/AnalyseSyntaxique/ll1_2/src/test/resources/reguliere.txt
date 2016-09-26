@@ -1,0 +1,14 @@
+<expr>    -> <somme> ;
+<somme>   -> <terme> <somme*> ;
+<somme*>  -> '+' <terme> <somme*> ;
+<somme*>  -> -eps- ;
+<terme>   -> <facteur> <terme*> ;
+<terme*>  -> '.' <facteur> <terme*> ;
+<terme*>  -> <facteur> <terme*> ;
+<terme*>  -> -eps- ;
+<facteur> -> <symb> <kleene> ;
+<kleene>  -> '*' <kleene> ;
+<kleene>  -> -eps- ;
+<symb>    -> 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' ;
+<symb>    -> 'ε' ;
+<symb>    -> '(' <expr> ')' ;

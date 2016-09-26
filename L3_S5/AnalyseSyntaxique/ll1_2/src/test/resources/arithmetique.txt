@@ -1,0 +1,13 @@
+<expr>     -> <somme> ;
+<somme>    -> <terme> <somme*> ;
+<somme*>   -> <plus> <terme> <somme*> | -eps- ;
+<plus>     -> '+' | '-' ;
+<terme>    -> <facteur> <terme*> ;
+<terme*>   -> <times> <facteur> <terme*> | -eps- ;
+<times>    -> '*' | '/' | '%' ;
+<facteur>  -> <plus> <facteur> ;
+<facteur>  -> <nombre> ;
+<nombre>   -> '(' <expr> ')' ;
+<nombre>   -> <chiffre> <chiffre*> ;
+<chiffre>  -> '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '0' ;
+<chiffre*> -> <chiffre> <chiffre*> | -eps- ;

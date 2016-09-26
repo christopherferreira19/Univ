@@ -1,0 +1,5 @@
+S -> A B C | -eps- ;
+A -> a | C ;
+B -> b | -eps- ;
+C -> c | D ;
+D -> d | e ;

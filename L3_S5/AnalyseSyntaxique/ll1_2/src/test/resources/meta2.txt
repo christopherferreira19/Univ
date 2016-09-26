@@ -1,0 +1,6 @@
+S -> S1 ';' S | -eps- ;
+S1 -> symb '->' D ;
+D -> <SE> D1 ;
+D1 -> <PE> D | -eps- ;
+<SE> -> symb | '-eps-' ;
+<PE> -> '|' | -eps- ;

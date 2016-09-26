@@ -1,0 +1,12 @@
+<grammaire> -> <regle> <grammaire> ;
+<grammaire> -> -eps- ;
+<regle>     -> nonterminal '->' <droite> ';' ;
+<droite>    -> <symboles> <droite*> ;
+<droite*>   -> '|' <symboles> <droite*> ;
+<droite*>   -> -eps- ;
+<symbole>   -> nonterminal ;
+<symbole>   -> terminal ;
+<symbole>   -> '-eps-' ;
+<symboles>  -> <symbole> <symboles*> ;
+<symboles*> -> <symbole> <symboles*> ;
+<symboles*> -> -eps- ;

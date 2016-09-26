@@ -1,0 +1,62 @@
+/* -------- Groupe 1 -------- */
+	Blevin Daniel
+	Chelle Lea
+	Daoud Marwa
+	Ferreira Christopher
+	Sazerat Jeremy
+/* -------- Groupe 1 -------- */
+
+
+I. COMPILER LE PROJET
+
+Pour compiler le projet, placez-vous a la racine du projet (inf352) et effectuez la commande suivante:
+	make
+Pour utiliser la partie "test automatique", il faudra installer la librairie LibElf au moyen de la commande suivante:
+	lib/install_libelf.sh
+Pour utiliser l'arm_simulator, il faudra télécharger le binaire ainsi le dossier elf_linker-1.0 au moyen de la commande suivante:
+	lib/install_arm_simulator.sh
+
+Le dossier BIN contient desormais tous les programmes utilitaires:
+	- elf_reader : Permet de lire le contenu d'un fichier ELF
+	- elf_relocation : Permet d'implanter un fichier ELF a une/des adresse(s) donnée(s)
+	- arm_runner : Client se connectant au simulateur ARM fournit pour le projet et chargeant un fichier
+	     elf executable pour son éxecution
+	- test_runner : Permet de lancer les tests des différentes fonctionnalités
+
+II. LIRE UN FICHIER ELF
+
+Pour lire un fichier ELF on utilisera la commande suivante:
+	bin/elf_reader FILE_PATH
+Où FILE_PATH designe le chemin vers le fichier à lire.
+
+Cette commande affichera en detail le fichier designé comme le ferait la commande: "arm-eabi-readelf FILE_PATH" avec differentes options
+Seule l'etape 4.1.3 n'est pas affichée puisqu'elle ne sert qu'à presenter de façon brute le contenu des sections (Inutile d'afficher une suite d'octets ...)
+
+
+III. REIMPLANTER UN FICHIER ELF
+
+Pour réimplanter un fichier objet au format ELF on utilisera:
+	bin/elf_relocation -e GLOBAL_SYMB [-s SECTION=ADDRESS]... SOURCE DESTINATION
+
+Cette commande réimplante le fichier SOURCE en un fichier DESTINATION.
+L'option "-e" permet de définir un point d'entrée sur un symbole global du programme. OPTION OBLIGATOIRE
+L'option "-s" permet de placer une section du programme a une adresse donnée. Cette option peut être appellé plusieurs fois.
+    (Le flag '-s' doit être répété autant de fois que d'adresse de sections)
+
+Exemple: bin/elf_relocation -e main -s .text=0x20 -s .data=0x2800 test/example2.o test/resultat
+
+IV. SIMULATEUR ARM
+
+Le simulateur peut être utilisé pour tester le code relogés par elf_relocation. Son utilisation est la même que l'exemple fournit
+ARM_runner_example avec pour argument nom de fichier argument le fichier à éxecuter dans le simulateur.
+
+V. TESTER L'EDITEUR DE LIENS
+
+Pour tester l'editeur de liens plusieurs tests ont été realisés.
+Ils peuvent être lancés automatiquement à la compilation du projet ou manuellement avec la commande :
+
+	bin/test_runner
+
+VI. TEST AVEC LE SIMULATEUR
+
+Le fichier arm_runner.sh à la racine du projet permet de lancer une suite de test avec le simulateur.

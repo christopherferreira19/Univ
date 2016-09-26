@@ -1,0 +1,53 @@
+/* -------- Groupe 1 -------- */
+	Blevin Daniel
+	Chelle Lea
+	Daoud Marwa
+	Ferreira Christopher
+	Sazerat Jeremy
+/* -------- Groupe 1 -------- */
+
+Les parties I a VI sont implementées et la partie VII repertorie les fonctionnalites envisagees/manquantes.
+
+
+I. COMPILER LE PROJET
+
+0. Makefile: Le projet est compile automatiquement grace a un Makefile
+
+II. LIRE UN FICHIER ELF
+
+1. Entete: Affiche l'entete d'un fichier ELF comme le fait la commande "readelf -h FICHIER"
+2. Table des Sections: Affiche la table des sections comme "readelf -S FICHIER"
+3. Contenu Section: Cette partie n'est pas affichee mais est fonctionnelle puisqu'elle est, notamment, utilisée pour créer la structure interne ELF_s (récuperer les sections STRTAB ...)
+4. Table des Symboles: Affiche la table des symboles comme "readelf -s FICHIER"
+5. Table de Réimplantations: Affiche la table de réimplantation comme "readelf -r FICHIER"
+
+III. REIMPLANTER UN FICHIER ELF
+
+6.  Renumérotation des sections: Les sections inutiles a l'éxécution sont supprimées et les sections sont renumérotées en consequence.
+7.  Assignation des addresses aux sections ayant le flag ALLOC, le cas échéant selon un argument, à défaut à la première adresse disponible.
+    Vérification de l'absence de chevauchement entre sections étant donné leur addresses et leur tailles.
+9.  Symboles: Chaque symbole est fixé en mémoire, son numero de section et sa valeur/addresse est modifié en fonction des étapes précédentes.
+10. Réimplantations: Modifie les sections de code avec les adresses des sections symboles qui ont éte fixés durant l'étape 7.
+    Le code prend en charge les réimplantations de type ABS*, JUMP24 & CALL.
+
+IV. AUTRE
+
+11. Interfacage Simulateur: Le programme est capable de charger en memoire du simulateur les differentes sections.
+12. arm-eabi-run: Le programme de sortie peut etre execute par la commande arm-eabi-run
+
+V. TESTER L'EDITEUR DE LIENS
+
+13. Plusieurs jeux de tests ont été mis en place.
+14. Un script 'arm_runner.sh' permet de comparer l'éxecution d'un fichier éxecutable créé à l'aide de notre programme elf_relocation
+     avec celle d'un fichier créé par le programme ld
+
+VI. EXECUTION AVEC arm-eabi-run
+
+15. L'éxécution des fichiers générés avec arm-eabi-run semblent fonctionner sans que l'on ait rencontré de problème.
+     Une autre version que celle disponible sur le serveur mandelbrot et les machines de l'UFR de l'outil supportant
+     l'option '-t' (trace des instructions) nous a permis de vérifier le bon fonctionnement des éxecutables produits.
+
+VII. FONCTIONNALITEES ENVISAGEES / MANQUANTES
+
+Le programme elf_relocation ne vérifie pas la cohérence des adresses passées en argument avec les contraintes d'alignement des sections
+(ce qui semble cohérent avec le comportement de ld), ceci est une fonctionnalité qui pourrait être ajoutée.

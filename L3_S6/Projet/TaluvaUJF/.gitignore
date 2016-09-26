@@ -1,0 +1,12 @@
+*.iml
+*.ipr
+*.iws
+.idea/
+
+/logs
+target
+hs_err_pid*
+menu.data
+Saves/
+src/main/java/menu/data
+

@@ -1,0 +1,16 @@
+##CLIENT_IP
+127.0.0.2
+192.0.1.2
+192.25.25.25
+
+##URI
+http://www.internetfirstpage.com/not
+http://www.coco.fr/
+
+
+##DOMAIN
+moc
+
+
+
+

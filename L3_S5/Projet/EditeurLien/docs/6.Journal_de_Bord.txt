@@ -1,0 +1,64 @@
+/* -------- Groupe 1 -------- */
+	Blevin Daniel
+	Chelle Lea
+	Daoud Marwa
+	Ferreira Christopher
+	Sazerat Jeremy
+/* -------- Groupe 1 -------- */
+
+Lundi:
+En premier lieu nous avons lu la documentation afin de comprendre le fonctionnement du Format ELF.
+S'en est est suivi une lecture approfondie du sujet et nous nous sommes concertes pour clarifier les elements que nous ne comprenions pas.
+Par la suite nous avons realisé l'etape n°1, qui consiste a recuperer l'entete d'un fichier ELF.
+Lors de la lecture du header, un probleme d'endian est survenu.
+En effet, les octets etaient inverses car lu en Little Endian au lieu de Big Endian.
+Nous avons donc du coder une fontion permettant de detecter le mode de lecture (ici Little Endian) et de corriger le probleme en inversant les octets lus.
+
+Mardi:
+Avant de commencer l'etape n°2, nous avons echangé et decidé de la structure que devrait adopter le code.
+Le groupe s'est separe en plusieurs sous-groupe afin d'avancer sur differents points en meme temps.
+Le code devait donc se diviser en differentes parties afin que tout le monde puisse travailler sans risquer d'ecraser le travail d'un autre.
+La partie affichage a donc ete separee de la partie lecture.
+Un Makefile a ete realise pour prendre en compte ces differents modifications.
+Un partie du groupe a avance l'etape n°2 qui consiste a recuperer la table de sections.
+Une autre a travailler sur l'affichage de l'entete de fichier, qui auparavant etait en brut (hexadecimal)
+Une autre a corrige les differents bugs de chaque autre partie (fuite memoire, decalage lors de la lecture ...)
+Le groupe avancait tellement vite que nous avons pu terminer l'etape n°3 qui affiche une section ce qui depassait nos previsions.
+
+Mercredi:
+Le groupe s'est la encore partage le travail.
+Une partie a travaille sur la table des symboles (etape 4).
+Une autre sur la table des relocations (etape 5).
+Une autre sur l'affichage des etapes realisees.
+Ce jour la une partie du groupe s'est également penché sur la réalisation de tests pour verifier le bon fonctionnement du code.
+
+Jeudi:
+Travail sur l'affichage complet de toutes les sections en fonction de la documentation.
+Travail sur les test en hardcode, qui compare le resultat avec la commande de reference (readelf).
+Le code a ete reorganise en fonction d'une structure qui a ete mise en place.
+Le fichier ELF est lu dans une structure locale avant d'etre traitee. (preparation pour relocation)
+
+Vendredi:
+Travail sur les reimplementations.
+
+Week-End:
+Travail sur la reimplantation et les tests. (etapes 6-9)
+
+Lundi/Mardi:
+Ajout de libelf pour les tests.
+Reorganisation du code et mise au propre.
+Travail sur les tests et finitions de la reimplantation.
+Corrections de tous les problemes.
+Ne manque que l'etape 10.
+Realisation des documents a rendre.
+
+Mercredi:
+Corrections de differents problemes, grace aux tests.
+Travail sur l'etape 10.
+Travail sur les documents a rendre.
+
+Jeudi:
+Finitions pour le système de réimplantations (Assignation d'adresses aux sections même sans argument, Test des chevauchements, etc...)
+Ajout d'un certain nombre de tests unitaires pour les relocations.
+Corrections pour l'interfacage avec le simulateur ARM fournit.
+Validation du fonctionnement avec le simulateur 'arm-eabi-run'

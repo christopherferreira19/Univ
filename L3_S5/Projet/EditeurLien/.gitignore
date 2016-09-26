@@ -1,0 +1,8 @@
+/bin
+/build
+*~
+.gdb_history
+/lib/elfutils*
+/lib/*elf_linker*
+/test/files/*_to_cmp
+/log

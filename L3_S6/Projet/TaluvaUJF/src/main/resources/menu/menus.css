@@ -1,0 +1,311 @@
+
+
+/*
+.breprendre{
+	-fx-background-color: radial-gradient(center 50% -40%, radius 200%,  #00acc1 45%,  #b2ebf2 70%);
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 5 30 5 30;
+              }
+*/
+
+@font-face {
+    font-family: 'f1';
+    src: url('/menu/f1.ttf');
+}
+
+.svBoxScene{
+           -fx-background-image: url(bg2.jpg);
+           -fx-background-color:white;
+           -fx-background-repeat: stretch;
+           -fx-background-position: center;
+           -fx-background-size: 120% auto;
+}
+.breprendre{
+    -fx-background-color: #aed581;
+    -fx-color: #aed581;
+    -fx-text-fill: #33691e;
+    //-fx-background-image: url('/testing/background.png');
+}
+
+.breprendre:hover{
+    -fx-background-color: #33691e;
+    -fx-color: #aed581;
+    -fx-text-fill: #aed581;
+}
+
+.buttonjoueur{
+    -fx-background-color: white;
+    -fx-color: white;
+    -fx-text-fill: green;
+    -fx-outer-border: green;
+}
+
+.buttonjoueur:hover{
+    -fx-background-color: #00D507;
+    -fx-color: white;
+    -fx-text-fill: white;
+}
+
+.buttonjoueur:armed {
+    -fx-color: white;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+.buttonjoueur:selected {
+    -fx-color: white;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+.buttonniveaux1{
+    -fx-background-color: white;
+    -fx-color: white;
+    -fx-text-fill: #FF9966;
+    -fx-outer-border: green;
+}
+
+.buttonniveaux1:hover{
+    -fx-background-color: #FF9966;
+    -fx-color: white;
+    -fx-text-fill: white;
+}
+
+.buttonniveaux1:armed {
+    -fx-color: white;
+    -fx-background-color: #FF9966;
+    -fx-text-fill: white;
+}
+
+.buttonniveaux1:selected {
+    -fx-color: white;
+    -fx-background-color: #FF9966;
+    -fx-text-fill: white;
+}
+
+.buttonniveaux2{
+    -fx-background-color: white;
+    -fx-color: white;
+    -fx-text-fill: #FF6666;
+    -fx-outer-border: green;
+}
+
+.buttonniveaux2:hover{
+    -fx-background-color: #FF6666;
+    -fx-color: white;
+    -fx-text-fill: white;
+}
+
+.buttonniveaux2:armed{
+    -fx-color: white;
+    -fx-background-color: #FF6666;
+    -fx-text-fill: white;
+}
+
+.buttonniveaux2:selected{
+    -fx-color: white;
+    -fx-background-color: #FF6666;
+    -fx-text-fill: white;
+}
+
+.buttonniveaux3{
+    -fx-background-color: white;
+    -fx-color: white;
+    -fx-text-fill: #CC0066;
+    -fx-outer-border: green;
+}
+
+.buttonniveaux3:hover{
+    -fx-background-color: #CC0066;
+    -fx-color: white;
+    -fx-text-fill: white;
+}
+
+.buttonniveaux3:armed {
+    -fx-color: white;
+    -fx-background-color: #CC0066;
+    -fx-text-fill: white;
+}
+
+.buttonniveaux3:selected {
+    -fx-color: white;
+    -fx-background-color: #CC0066;
+    -fx-text-fill: white;
+}
+
+.buttonhexa{
+    -fx-font-family: 'f1';
+    -fx-font-weight: bold;
+    -fx-background-color: #EFB068;
+    -fx-color: white;
+    -fx-text-fill: white;
+    -fx-outer-border: #EFB068;
+}
+
+.buttonhexa:hover{
+    -fx-background-color: #AB8152;
+    -fx-color: white;
+    -fx-text-fill: white;
+}
+
+.buttonhexa:disabled {
+    -fx-color: white;
+    -fx-background-color: #D4B78F;
+    -fx-background-radius: 0;
+    -fx-text-fill: white;
+    -fx-opacity:1.0;
+}
+
+.buttonhexa:selected {
+    -fx-color: white;
+    -fx-background-color: #E97B33;
+    -fx-text-fill: white;
+}
+
+.buttonplay{
+    -fx-font-size:11pt;
+    -fx-font-weight: bold;
+    -fx-background-color: #00D507;
+    -fx-color: white;
+    -fx-text-fill: white;
+    -fx-outer-border: #00D507;
+}
+
+.buttonplay:hover{
+    -fx-background-color: #00B506;
+    -fx-color: white;
+    -fx-text-fill: white;
+}
+
+.buttonplay:focused {
+    -fx-color: white;
+    -fx-background-color: #00B506;
+    -fx-text-fill: white;
+}
+
+
+.buttonquit{
+    -fx-font-size:11pt;
+    -fx-font-weight: bold;
+    -fx-background-color: red;
+    -fx-color: white;
+    -fx-text-fill: white;
+    -fx-outer-border: red;
+}
+
+.buttonquit:hover{
+    -fx-background-color: #C00105;
+    -fx-color: white;
+    -fx-text-fill: white;
+}
+
+.buttonquit:focused {
+    -fx-color: white;
+    -fx-background-color: #C00105;
+    -fx-text-fill: white;
+}
+
+.buttonreprendre{
+    -fx-background-color:white;
+    /*-fx-color: white;*/
+    -fx-text-fill: green;
+    -fx-outer-border: green;
+    /*-fx-border: 20px;*/
+    -fx-border-color: green;
+    -fx-border-radius:10;
+    -fx-background-radius:12;
+    -fx-border-width:1;
+}
+
+.buttonreprendre:hover{
+    -fx-background-color: #00D507;
+    -fx-color: white;
+    -fx-text-fill: white;
+}
+
+.buttonreprendre:armed {
+    -fx-color: white;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+.buttonreprendre:selected {
+    -fx-color: white;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+
+.bin{
+    -fx-background-color:#E97B33;
+    -fx-text-fill: white;
+}
+
+.b1{
+    -fx-border-color: blue;
+    -fx-border-style: solid;
+    -fx-border-width: 1;
+}
+.b2{
+    -fx-border-color: pink;
+    -fx-border-style: solid;
+    -fx-border-width: 5;
+}
+.b3{
+    -fx-border-color: red;
+    -fx-border-style: solid;
+    -fx-border-width: 1;
+}
+.b4{
+    -fx-background-color: white;
+    -fx-opacity: 0.3;
+    -fx-background-radius: 30 30 30 30;
+}
+
+.b5{
+    /*-fx-border-color: ;*/
+    /*-fx-border-style: solid;*/
+    /*-fx-border-width: 1;*/
+    /*-fx-background-color: white;*/
+    -fx-opacity: 1.3;
+    -fx-background-radius: 30 30 30 30
+}
+
+.s >.viewport{
+    -fx-background-color:transparent;
+}
+
+.s{
+
+    -fx-background-color:transparent;
+}
+
+.s .scroll-bar:vertical{
+    -fx-background-color:transparent;
+
+}
+.s .scroll-bar .thumb:hover{
+    -fx-background-color: #00D507;
+}
+.s .scroll-bar .thumb:pressed{
+    -fx-background-color: #4CAF50;
+}
+.s .scroll-bar .thumb{
+    -fx-background-color: green;
+}
+
+.s  .scroll-bar .increment-arrow {
+  /*-fx-shape: " ";*/
+  /*-fx-padding:3px;*/
+   -fx-background-color: #4CAF50;
+}
+.s  .scroll-bar .decrement-arrow{
+    /*-fx-shape: " ";*/
+    /*-fx-padding:3px;*/
+  -fx-background-color: #4CAF50;
+}
+.s .scroll-bar :vertical .track{
+
+-fx-border-radius:2em
+ }
