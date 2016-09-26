@@ -4,47 +4,51 @@ import java.util.Random;
 
 public class MazeNode {
 
-    public static MazeNode generate(Random random, int width, int height) {
-        return doGenerate(random, null, 0, 0, width, height);
+    public static MazeNode generate(Random rand, int width, int height) {
+        return generate(rand, null, 0, 0, width, height);
     }
 
-    private static MazeNode doGenerate(Random random,
-                MazeNode parent, int x, int y, int width, int height) {
-        MazeNode node = new MazeNode(parent, x, y, width, height);
+private static MazeNode generate(Random rand,
+        MazeNode parent, int x, int y, int w, int h) {
+    MazeNode node = new MazeNode(parent, x, y, w, h);
 
-        if (width < 2 || height < 2) {
-            return node;
-        }
-
-        if (width > height || width == height && random.nextBoolean()) {
-            node.division = Division.VERTICAL;
-            int divisionIndex = random.nextInt(width - 1) + 1;
-            int doorPosition = random.nextInt(height);
-            node.doorX = x + divisionIndex;
-            node.doorY = y + doorPosition;
-
-            node.topLeft = doGenerate(random, node, x, y, divisionIndex, height);
-            node.botRight = doGenerate(random, node, x + divisionIndex, y, width - divisionIndex, height);
-
-            node.topLeftDoorLeaf = node.topLeft.findLeafContaining(node.doorX - 1, node.doorY);
-            node.botRightDoorLeaf = node.botRight.findLeafContaining(node.doorX, node.doorY);
-        }
-        else {
-            node.division = Division.HORIZONTAL;
-            int divisionIndex = random.nextInt(height - 1) + 1;
-            int doorPosition = random.nextInt(width);
-            node.doorX = x + doorPosition;
-            node.doorY = y + divisionIndex;
-
-            node.topLeft = doGenerate(random, node, x, y, width, divisionIndex);
-            node.botRight = doGenerate(random, node, x, y + divisionIndex, width, height - divisionIndex);
-
-            node.topLeftDoorLeaf = node.topLeft.findLeafContaining(node.doorX, node.doorY - 1);
-            node.botRightDoorLeaf = node.botRight.findLeafContaining(node.doorX, node.doorY);
-        }
-
+    if (w < 2 || h < 2) {
         return node;
     }
+
+    if (w > h || w == h && rand.nextBoolean()) {
+        node.division = Division.VERTICAL;
+        int wallIdx = rand.nextInt(w - 1) + 1;
+        int doorPos = rand.nextInt(h);
+        node.doorX = x + wallIdx;
+        node.doorY = y + doorPos;
+
+        node.topLeft = generate(rand, node, x, y, wallIdx, h);
+        node.botRight = generate(rand, node, x + wallIdx, y, w - wallIdx, h);
+
+        node.topLeftDoorLeaf = node.topLeft.findLeafContaining(
+                node.doorX - 1, node.doorY);
+        node.botRightDoorLeaf = node.botRight.findLeafContaining(
+                node.doorX, node.doorY);
+    }
+    else {
+        node.division = Division.HORIZONTAL;
+        int wallIdx = rand.nextInt(h - 1) + 1;
+        int doorPos = rand.nextInt(w);
+        node.doorX = x + doorPos;
+        node.doorY = y + wallIdx;
+
+        node.topLeft = generate(rand, node, x, y, w, wallIdx);
+        node.botRight = generate(rand, node, x, y + wallIdx, w, h - wallIdx);
+
+        node.topLeftDoorLeaf = node.topLeft.findLeafContaining(
+                node.doorX, node.doorY - 1);
+        node.botRightDoorLeaf = node.botRight.findLeafContaining(
+                node.doorX, node.doorY);
+    }
+
+    return node;
+}
 
     final MazeNode parent;
 

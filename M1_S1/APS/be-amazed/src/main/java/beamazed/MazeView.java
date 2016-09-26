@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MazeView extends JComponent {
 
-    private static final int CELL_SIZE = 20;
+    private static final int CELL_SIZE = 10;
 
     private final MazeNode maze;
 
@@ -26,7 +26,13 @@ public class MazeView extends JComponent {
         this.dy = dy;
         this.path = path;
 
-        setSize((maze.width + 2) * CELL_SIZE, (maze.height + 2) * CELL_SIZE);
+        Dimension dimension = new Dimension(
+                (maze.width + 2) * CELL_SIZE,
+                (maze.height + 2) * CELL_SIZE);
+        setSize(dimension);
+        setMinimumSize(dimension);
+        setPreferredSize(dimension);
+        setMaximumSize(dimension);
     }
 
     @Override
@@ -39,7 +45,7 @@ public class MazeView extends JComponent {
         drawWalls(g, maze);
 
         boolean even = true;
-        Path pathIt = path;
+        PathCell pathIt = path.first;
         while (pathIt != null) {
             even = !even;
             g.setColor(even ? Color.GREEN : Color.CYAN);
@@ -74,14 +80,14 @@ public class MazeView extends JComponent {
 
         g.setColor(Color.ORANGE);
         g.fillRect(
-                CELL_SIZE + sx * CELL_SIZE + 4,
-                CELL_SIZE + sy * CELL_SIZE + 4,
-                CELL_SIZE - 8, CELL_SIZE - 8);
+                CELL_SIZE + sx * CELL_SIZE + 2,
+                CELL_SIZE + sy * CELL_SIZE + 2,
+                CELL_SIZE - 3, CELL_SIZE - 3);
         g.setColor(Color.RED);
         g.fillRect(
-                CELL_SIZE + dx * CELL_SIZE + 4,
-                CELL_SIZE + dy * CELL_SIZE + 4,
-                CELL_SIZE - 8, CELL_SIZE - 8);
+                CELL_SIZE + dx * CELL_SIZE + 2,
+                CELL_SIZE + dy * CELL_SIZE + 2,
+                CELL_SIZE - 3, CELL_SIZE - 3);
     }
 
     private void drawWalls(Graphics g, MazeNode node) {
@@ -115,22 +121,22 @@ public class MazeView extends JComponent {
 
         Random random = new Random();
         long startTime = System.nanoTime();
-        MazeNode maze = MazeNode.generate(random, 30, 30);
+        MazeNode maze = MazeNode.generate(random, 100, 100);
         System.out.println("Gen : " + elapsedMs(startTime) + "ms");
 
         startTime = System.nanoTime();
-        int sx = random.nextInt(maze.width);
-        int sy = random.nextInt(maze.height);
+        int sx = 0;//random.nextInt(maze.width);
+        int sy = 0;//random.nextInt(maze.height);
         int dx = maze.width - 1;//random.nextInt(maze.width);
         int dy = maze.height - 1;//random.nextInt(maze.height);
         Path path = PathSolver.solve(maze, sx, sy, dx, dy);
         System.out.println("Solve : " + elapsedMs(startTime) + "ms");
         int pathSize = 0;
-        Path pathIt = path;
+        PathCell pathIt = path.first;
         while (pathIt != null) { pathSize++; pathIt = pathIt.next; }
         System.out.println("Path Size: " + pathSize);
 
-        frame.add(new MazeView(maze, sx, sy, dx, dy, path));
+        frame.add(new JScrollPane(new MazeView(maze, sx, sy, dx, dy, path)));
 
         frame.setSize(500, 500);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
