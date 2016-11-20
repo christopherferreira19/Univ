@@ -34,11 +34,14 @@ int main(int argc, char* argv[]) {
 
     cluster_data* clusters = malloc(clusters_count * sizeof(cluster_data));
     for (int i = 0; i < clusters_count; i++) {
-        // Choose initial cluster centers randomly for now.
         clusters[i].count = 0;
         clusters[i].red_sum = 0;
         clusters[i].green_sum = 0;
         clusters[i].blue_sum = 0;
+        clusters[i].i_sum = 0;
+        clusters[i].j_sum = 0;
+
+        // Choose initial cluster centers randomly
         clusters[i].center = (color) {
             rand() % src->maxval,
             rand() % src->maxval,
@@ -49,7 +52,9 @@ int main(int argc, char* argv[]) {
     }
 
     int* pixel_cluster = malloc(src->cols * src->rows * sizeof(int));
-    for (int p = 0; p < 5; p++)  {
+    for (;;) {
+        bool modified = false;
+
         for (int i = 0; i < src->rows; i++) {
             for (int j = 0; j < src->cols; j++) {
                 color c = PPM_AT(src, i, j);
@@ -73,7 +78,11 @@ int main(int argc, char* argv[]) {
                     }
                 }
 
-                pixel_cluster[i * src->cols + j] = min_cluster;
+                if (pixel_cluster[i * src->cols + j] != min_cluster) {
+                    pixel_cluster[i * src->cols + j] = min_cluster;
+                    modified = true;
+                }
+
                 clusters[min_cluster].count++;
                 clusters[min_cluster].red_sum += c.red;
                 clusters[min_cluster].green_sum += c.green;
@@ -81,6 +90,10 @@ int main(int argc, char* argv[]) {
                 clusters[min_cluster].i_sum += i;
                 clusters[min_cluster].j_sum += j;
             }
+        }
+
+        if (!modified) {
+            break;
         }
 
         for (int i = 0; i < clusters_count; i++) {
