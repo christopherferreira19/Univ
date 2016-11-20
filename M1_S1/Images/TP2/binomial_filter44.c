@@ -3,7 +3,10 @@
 #include <string.h>
 #include "pgm_io.h"
 
-int binomial_filter[5][5] = {
+#define FILTER_SIZE 5
+#define FILTER_HALFSIZE (FILTER_SIZE / 2)
+#define FILTER_SUM 256
+int filter[FILTER_SIZE][FILTER_SIZE] = {
    { 1,  4,  6,  4,  1 },
    { 4, 16, 24, 16,  4 },
    { 6, 24, 36, 24,  6 },
@@ -18,27 +21,29 @@ int main(int argc, char* argv[]) {
       exit(0);
     }
 
-    img_t* src = read_image(argv[1]);
-    img_t* dest = create_empty_image(src->cols, src->rows, src->maxval);
-  
-    for (int i = 2; i < src->rows - 2; i++) {
-      for (int j = 2; j < src->cols - 2; j++) {
+    pgm_t* src = pgm_read(argv[1]);
+    pgm_t* dest = pgm_create_empty(src->cols, src->rows, src->maxval);
+
+    for (int i = FILTER_HALFSIZE; i < src->rows - FILTER_HALFSIZE; i++) {
+      for (int j = FILTER_HALFSIZE; j < src->cols - FILTER_HALFSIZE; j++) {
           int sum = 0;
 
-          for (int u = 0; u < 5; u++) {
-              for (int v = 0; v < 5; v++) {
-                  sum += binomial_filter[u][v] * IMG_AT(src, i-2+u, j-2+v);
+          for (int u = 0; u < FILTER_SIZE; u++) {
+              for (int v = 0; v < FILTER_SIZE; v++) {
+                  sum += filter[u][v] * PGM_AT(src,
+                      i - FILTER_HALFSIZE + u,
+                      j - FILTER_HALFSIZE + v);
               }
           }
 
-          IMG_AT(dest, i, j) = sum / 256;
+          PGM_AT(dest, i, j) = sum / FILTER_SUM;
       }
     }
 
-    write_image(dest, true);
+    pgm_write(dest, true);
 
-    free_image(dest);
-    free_image(src);
+    pgm_free(dest);
+    pgm_free(src);
 
     return 0;
 }

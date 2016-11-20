@@ -10,17 +10,17 @@ int main(int argc, char* argv[]) {
       exit(0);
     }
 
-    img_t* src = read_image(argv[1]);
+    pgm_t* src = pgm_read(argv[1]);
 
     int histo[256] = {0, };
 
     for (int i = 0; i < src->rows; i++) {
         for (int j = 0; j < src->cols; j++) {
-            histo[IMG_AT(src, i, j)]++;
+            histo[PGM_AT(src, i, j)]++;
         }
     }
 
-    img_t* dest = create_empty_image(src->cols, src->rows, src->maxval);
+    pgm_t* dest = pgm_create_empty(src->cols, src->rows, src->maxval);
 
     int minval = 0;
     while (histo[minval] == 0) minval++;
@@ -29,14 +29,14 @@ int main(int argc, char* argv[]) {
 
     for (int i = 0; i < src->rows; i++) {
         for (int j = 0; j < src->cols; j++) {
-            IMG_AT(dest, i, j) = src->maxval * (IMG_AT(src, i, j) - minval) / (maxval - minval);
+            PGM_AT(dest, i, j) = src->maxval * (PGM_AT(src, i, j) - minval) / (maxval - minval);
         }
     }
 
-    write_image(dest, true);
+    pgm_write(dest, true);
 
-    free_image(dest);
-    free_image(src);
+    pgm_free(dest);
+    pgm_free(src);
 
     return 0;
 }

@@ -1,7 +1,7 @@
 #include "pgm_io.h"
 
-img_t* create_empty_image(int cols, int rows, int maxval) {
-    img_t* img = malloc(sizeof(img_t));
+pgm_t* pgm_create_empty(int cols, int rows, int maxval) {
+    pgm_t* img = malloc(sizeof(pgm_t));
     img->cols = cols;
     img->rows = rows;
     img->maxval = maxval;
@@ -10,9 +10,9 @@ img_t* create_empty_image(int cols, int rows, int maxval) {
     return img;
 }
 
-img_t* read_image(char* filename) {
+pgm_t* pgm_read(char* filename) {
     FILE* ifp;
-    img_t* img = malloc(sizeof(img_t));
+    pgm_t* img = malloc(sizeof(pgm_t));
     int ich1, ich2;
     pixel_format_t pixel_format;
     int i, j;
@@ -59,13 +59,13 @@ img_t* read_image(char* filename) {
     return img;
 }
 
-img_t* copy_image(img_t* src) {
-    img_t* cpy = create_empty_image(src->cols, src->rows, src->maxval);
+pgm_t* pgm_copy(pgm_t* src) {
+    pgm_t* cpy = pgm_create_empty(src->cols, src->rows, src->maxval);
     memcpy(cpy->graymap, src->graymap, src->cols * src->rows * sizeof(gray));
     return cpy;
 }
 
-void write_image(img_t* img, pixel_format_t pixel_format) {
+void pgm_write(pgm_t* img, pixel_format_t pixel_format) {
 	if (pixel_format == ALPHA) printf("P2\n");
     else       printf("P5\n");
 
@@ -82,7 +82,7 @@ void write_image(img_t* img, pixel_format_t pixel_format) {
                 printf("%c",  img->graymap[i * img->cols + j]);
 }
 
-void free_image(img_t* img) {
+void pgm_free(pgm_t* img) {
 	free(img->graymap);
 	free(img);
 }

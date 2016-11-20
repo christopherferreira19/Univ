@@ -10,13 +10,13 @@ int main(int argc, char* argv[]) {
       exit(0);
     }
 
-    img_t* src = read_image(argv[1]);
+    pgm_t* src = pgm_read(argv[1]);
 
     int histo[256] = {0, };
 
     for (int i = 0; i < src->rows; i++) {
         for (int j = 0; j < src->cols; j++) {
-            histo[IMG_AT(src, i, j)]++;
+            histo[PGM_AT(src, i, j)]++;
         }
     }
 
@@ -24,24 +24,19 @@ int main(int argc, char* argv[]) {
         histo[i] += histo[i - 1];
     }
 
-    img_t* dest = create_empty_image(src->cols, src->rows, src->maxval);
-
-    int minval = 0;
-    while (histo[minval] == 0) minval++;
-    int maxval = 255;
-    while (histo[maxval] == 0) maxval--;
+    pgm_t* dest = pgm_create_empty(src->cols, src->rows, src->maxval);
 
     int total_pixels = src->cols * src->rows;
     for (int i = 0; i < src->rows; i++) {
         for (int j = 0; j < src->cols; j++) {
-            IMG_AT(dest, i, j) = src->maxval * (histo[IMG_AT(src, i, j)]) / total_pixels;
+            PGM_AT(dest, i, j) = src->maxval * histo[PGM_AT(src, i, j)] / total_pixels;
         }
     }
 
-    write_image(dest, true);
+    pgm_write(dest, true);
 
-    free_image(dest);
-    free_image(src);
+    pgm_free(dest);
+    pgm_free(src);
 
     return 0;
 }

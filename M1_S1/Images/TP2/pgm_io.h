@@ -7,7 +7,7 @@
 #include <string.h>
 #include "Util.h"
 
-#define IMG_AT(img, i, j) ((img)->graymap[(i) * (img)->cols + (j)])
+#define PGM_AT(img, i, j) ((img)->graymap[(i) * (img)->cols + (j)])
 
 typedef enum {
 	ALPHA,
@@ -19,17 +19,17 @@ typedef struct {
 	int rows;
 	int maxval;
 	gray* graymap;
-} img_t;
+} pgm_t;
 
 
-img_t* create_empty_image(int cols, int rows, int maxval);
+pgm_t* pgm_create_empty(int cols, int rows, int maxval);
 
-img_t* read_image(char* filename);
+pgm_t* pgm_read(char* filename);
 
-img_t* copy_image(img_t* img);
+pgm_t* pgm_copy(pgm_t* img);
 
-void write_image(img_t* img, pixel_format_t pixel_format);
+void pgm_write(pgm_t* img, pixel_format_t pixel_format);
 
-void free_image(img_t* img);
+void pgm_free(pgm_t* img);
 
 #endif

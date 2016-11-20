@@ -10,13 +10,13 @@ int main(int argc, char* argv[]) {
       exit(0);
     }
 
-    img_t* src = read_image(argv[1]);
+    pgm_t* src = pgm_read(argv[1]);
 
     int histo[256] = {0, };
 
     for (int i = 0; i < src->rows; i++) {
         for (int j = 0; j < src->cols; j++) {
-            histo[IMG_AT(src, i, j)]++;
+            histo[PGM_AT(src, i, j)]++;
         }
     }
 
@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
         printf("%d %d\n", i, histo[i]);
     }
 
-    free_image(src);
+    pgm_free(src);
 
     return 0;
 }

@@ -4,6 +4,7 @@
 #include "pgm_io.h"
 
 #define N 3
+#define HALF_N (N / 2)
 #define MEDIAN_INDEX ((N * N) + 1) / 2
 
 gray values[N * N];
@@ -19,27 +20,26 @@ int main(int argc, char* argv[]) {
       exit(0);
     }
 
-    img_t* src = read_image(argv[1]);
-
-    img_t* dest = malloc(sizeof(img_t));
-    dest->cols = src->cols;
-    dest->rows = src->rows;
-    dest->maxval = src->maxval;
-    dest->graymap = malloc(dest->cols * dest->rows);
+    pgm_t* src = pgm_read(argv[1]);
+    pgm_t* dest = pgm_create_empty(src->cols, src->rows, src->maxval);
     
-    for (int i = 2; i < src->rows - 2; i++) {
-      for (int j = 2; j < src->cols - 2; j++) {
+    for (int i = HALF_N; i < src->rows - HALF_N; i++) {
+      for (int j = HALF_N; j < src->cols - HALF_N; j++) {
           for (int u = 0; u < N; u++) {
               for (int v = 0; v < N; v++) {
-                  values[u * N + v] = src->graymap[(i-2+u) * src->cols + (j-2+v)];
+                  values[u * N + v] = PGM_AT(src, i-HALF_N+u, j-HALF_N+v);
               }
           }
 
           qsort(values, N * N, sizeof(int), gray_compare);
-          dest->graymap[i * dest->cols + j] = values[MEDIAN_INDEX];
+          PGM_AT(dest, i, j) = values[MEDIAN_INDEX];
       }
     }
-    write_image(dest, true);
+
+    pgm_write(dest, true);
+
+    pgm_free(dest);
+    pgm_free(src);
 
     return 0;
 }
