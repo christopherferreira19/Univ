@@ -2,7 +2,7 @@ package morse;
 
 import java.util.List;
 
-public enum MorseAlphabet {
+public enum Alpha2Morse {
 
     A(".-"),
     B("-..."),
@@ -34,13 +34,13 @@ public enum MorseAlphabet {
 
     private static final int A_NUMERIC_VALUE = Character.getNumericValue('a');
 
-    final List<Morse> code;
+    public final List<MorseChar> code;
 
-    MorseAlphabet(String str) {
-        this.code = Morse.of(str);
+    Alpha2Morse(String str) {
+        this.code = MorseChar.of(str);
     }
 
-    public static MorseAlphabet of(char c) {
+    public static Alpha2Morse of(char c) {
         return values()[Character.getNumericValue(c) - A_NUMERIC_VALUE];
     }
 }

@@ -3,18 +3,18 @@ package morse;
 import java.util.Arrays;
 import java.util.List;
 
-public enum Morse {
+public enum MorseChar {
     DOT,
     DASH;
 
-    public static Morse of(char c) {
+    public static MorseChar of(char c) {
         if (c == '.') { return DOT; }
         if (c == '-') { return DASH; }
-        throw new RuntimeException("Invalid char " + c + " for Morse code");
+        throw new RuntimeException("Invalid char " + c + " for MorseChar code");
     }
 
-    public static List<Morse> of(String str) {
-        Morse[] result = new Morse[str.length()];
+    public static List<MorseChar> of(String str) {
+        MorseChar[] result = new MorseChar[str.length()];
         for (int i = 0; i < str.length(); i++){
             result[i] = of(str.charAt(i));
         }
@@ -26,10 +26,10 @@ public enum Morse {
         return this == DOT ? "." : "-";
     }
 
-    public static String toString(List<Morse> list) {
+    public static String toString(List<MorseChar> list) {
         StringBuilder builder = new StringBuilder();
-        for (Morse morse : list) {
-            builder.append(morse.toString());
+        for (MorseChar morseChar : list) {
+            builder.append(morseChar.toString());
         }
 
         return builder.toString();
