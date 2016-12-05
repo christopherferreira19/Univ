@@ -1,0 +1,19 @@
+digraph finite_state_machine {
+   rankdir=TB;
+   ratio = auto
+   block0[ shape=rect label=<LIT b 4<br/>LIT a 5<br/>LIT b 6<br/>> ]
+   block1[ shape=rect label=<LT %1 a b<br/>> ]
+   block2[ shape=rect label=<LIT c{1.2} 3<br/>ADD a a c{1.2}<br/>SUB b b c{1.2}<br/>> ]
+   block3[ shape=rect label=<LIT c{1.1} 1<br/>SUB a a c{1.1}<br/>ADD b b c{1.1}<br/>> ]
+   block4[ shape=rect label=<> ]
+   block5[ shape=rect label=<LIT %3 0<br/>GT %2 a %3<br/>> ]
+   block6[ shape=rect label=<PRNT b<br/>END<br/>> ]
+   block0 -> block5 [ label="" ]
+   block1 -> block3 [ label="%1" ]
+   block1 -> block2 [ label="" ]
+   block2 -> block4 [ label="" ]
+   block3 -> block4 [ label="" ]
+   block4 -> block5 [ label="" ]
+   block5 -> block1 [ label="%2" ]
+   block5 -> block6 [ label="" ]
+}

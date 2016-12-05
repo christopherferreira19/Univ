@@ -1,0 +1,12 @@
+digraph finite_state_machine {
+   rankdir=TB;
+   ratio = auto
+   block0[ shape=rect label=<LIT b 4<br/>LIT a 10<br/>LIT %2 5<br/>GT %1 a %2<br/>> ]
+   block1[ shape=rect label=<PRNT b<br/>> ]
+   block2[ shape=rect label=<PRNT a<br/>> ]
+   block3[ shape=rect label=<LIT b 6<br/>SUB %3 a b<br/>PRNT %3<br/>END<br/>> ]
+   block0 -> block2 [ label="%1" ]
+   block0 -> block1 [ label="" ]
+   block1 -> block3 [ label="" ]
+   block2 -> block3 [ label="" ]
+}

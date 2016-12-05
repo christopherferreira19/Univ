@@ -1,0 +1,4 @@
+examples/*.S
+examples/*.gv
+examples/test?
+examples/*.c
