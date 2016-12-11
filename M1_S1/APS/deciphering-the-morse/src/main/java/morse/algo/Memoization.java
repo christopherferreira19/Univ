@@ -10,26 +10,12 @@ import java.util.List;
 public class Memoization {
 
     public static int count_sentences(Input input) {
-        List<List<MorseChar>> morseDictionary = dictionaryAlphaToMorse(input.dictionary);
+        List<List<MorseChar>> morseDictionary = Dictionary.alphaToMorse(input.dictionary);
         int[] memo = new int[input.sequence.size()];
         for (int i = 0; i < input.sequence.size(); i++) {
             memo[i] = -1;
         }
         return count_sentences_rec(input.sequence, 0, morseDictionary, memo);
-    }
-
-    private static List<List<MorseChar>> dictionaryAlphaToMorse(List<String> dictionary) {
-        List<List<MorseChar>> result = new ArrayList<>();
-        for (String s : dictionary) {
-            List<MorseChar> morseCharWord = new ArrayList<>();
-            for (int i = 0; i < s.length(); i++){
-                char c = s.charAt(i);
-                morseCharWord.addAll(Alpha2Morse.of(c).code);
-            }
-            result.add(morseCharWord);
-        }
-
-        return result;
     }
 
     public static int count_sentences_rec(List<MorseChar> morseChar, int from, List<List<MorseChar>> dictionary, int[] memo) {
