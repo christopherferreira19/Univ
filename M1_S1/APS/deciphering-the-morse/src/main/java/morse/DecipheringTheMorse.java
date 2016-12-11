@@ -2,6 +2,7 @@ package morse;
 
 import morse.algo.MemoizationDicoTree;
 import morse.algo.TabulationDicoTree;
+import morse.algo.TabulationDicoTree2;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -9,12 +10,13 @@ import java.util.function.Function;
 public class DecipheringTheMorse {
 
     public static void main(String[] args) {
-        Input input = Input.fromFilename("test/morse-long.input");
+        Input input = Input.fromFilename("test/morse-long2.input");
         //Input input = Generator.generate(100, 15, 1, 1);
         //run(input, Recursive::count_sentences);
         //run("Memoization", input, 1, Memoization::count_sentences);
         //run("MemoizationDicoTree", input, 10000, MemoizationDicoTree::count_sentences);
-        run("TabulationDicoTree", input, 10, TabulationDicoTree::count_sentences);
+        run("TabulationDicoTree", input, 1, TabulationDicoTree::count_sentences);
+        run("TabulationDicoTree2", input, 1, TabulationDicoTree2::count_sentences);
     }
 
     private static int run(String name, Input input, int times, Function<Input, Integer> fun) {
