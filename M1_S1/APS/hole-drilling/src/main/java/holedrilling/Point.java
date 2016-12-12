@@ -30,4 +30,15 @@ public class Point {
         Point other = (Point) object;
         return x == other.x && y == other.y;
     }
+
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
+
+    public static double distanceSq(Point left, Point right) {
+        double distX = (left.x - right.x);
+        double distY = (left.y - right.y);
+        return distX * distX + distY * distY;
+    }
 }
