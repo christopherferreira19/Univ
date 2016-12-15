@@ -50,6 +50,18 @@ int main(int argc, char* argv[]) {
         clusters[i].i = rand() % src->cols;
         clusters[i].j = rand() % src->rows;
     }
+    /*
+    // Forced initial three
+    clusters[0].center = (color) { 255, 83, 201 };
+    clusters[2].i = 100;
+    clusters[2].j = 140;
+    clusters[1].center = (color) { 222, 219, 64 };
+    clusters[1].i = 400;
+    clusters[1].j = 470;
+    clusters[2].center = (color) { 0, 0, 0 };
+    clusters[2].i = 1000;
+    clusters[2].j = 755;
+    //*/
 
     int* pixel_cluster = malloc(src->cols * src->rows * sizeof(int));
     for (;;) {
@@ -58,16 +70,18 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i < src->rows; i++) {
             for (int j = 0; j < src->cols; j++) {
                 color c = PPM_AT(src, i, j);
-                int min_distance_sq = INT_MAX;
+                double min_distance_sq = INT_MAX;
                 int min_cluster = -1;
                 for (int cluster = 0; cluster < clusters_count; cluster++) {
                     color center = clusters[cluster].center;
-                    int dred = center.red - c.red;
-                    int dgreen = center.green - c.green;
-                    int dblue = center.blue - c.blue;
-                    int di = clusters[cluster].i - i;
-                    int dj = clusters[cluster].j - j;
-                    int distance_sq = dred * dred
+                    double dred = (double) (center.red - c.red) / src->maxval;
+                    double dgreen = (double) (center.green - c.green) / src->maxval;
+                    double dblue = (double) (center.blue - c.blue) / src->maxval;
+                    double di = (double) (clusters[cluster].i - i) / src->rows;
+                    double dj = (double) (clusters[cluster].j - j)  / src->cols;
+                    di /= 1.9d;
+                    dj /= 1.9d;
+                    double distance_sq = dred * dred
                             + dgreen * dgreen
                             + dblue * dblue
                             + di * di
@@ -108,8 +122,8 @@ int main(int argc, char* argv[]) {
             clusters[i].red_sum = 0;
             clusters[i].green_sum = 0;
             clusters[i].blue_sum = 0;
-            clusters[i].i = 0;
-            clusters[i].j = 0;
+            clusters[i].i_sum = 0;
+            clusters[i].j_sum = 0;
         }
     }
 
