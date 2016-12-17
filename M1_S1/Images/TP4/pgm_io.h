@@ -30,6 +30,10 @@ pgm_t* pgm_copy(pgm_t* img);
 
 void pgm_write(pgm_t* img, pixel_format_t pixel_format);
 
+void pgm_write_filename(pgm_t* img, pixel_format_t pixel_format, char* filename, char* suffix);
+
+void pgm_write_file(pgm_t* img, pixel_format_t pixel_format, FILE* file);
+
 void pgm_free(pgm_t* img);
 
 #endif

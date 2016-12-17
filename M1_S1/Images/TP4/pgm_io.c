@@ -1,3 +1,4 @@
+#include <string.h>
 #include "pgm_io.h"
 
 pgm_t* pgm_create_empty(int cols, int rows, int maxval) {
@@ -66,20 +67,39 @@ pgm_t* pgm_copy(pgm_t* src) {
 }
 
 void pgm_write(pgm_t* img, pixel_format_t pixel_format) {
-	if (pixel_format == ALPHA) printf("P2\n");
-    else       printf("P5\n");
+    pgm_write_file(img, pixel_format, stdout);
+}
 
-    printf("%d %d \n", img->cols, img->rows);
-    printf("%d\n", img->maxval);
+void pgm_write_filename(pgm_t* img, pixel_format_t pixel_format, char* filename, char* suffix) {
+    int base_len = strlen(filename);
+    int suff_len = strlen(suffix);
+    char* outname = malloc(base_len + suff_len + 2);
+    char* dot = strrchr(filename, '.');
+    *dot = '\0';
+    sprintf(outname, "%s_%s.pgm", filename, suffix);
+    *dot = '.';
+
+    FILE* out = fopen(outname, "w");
+    pgm_write_file(img, pixel_format, out);
+    fclose(out);
+    free(outname);
+}
+
+void pgm_write_file(pgm_t* img, pixel_format_t pixel_format, FILE* file) {
+    if (pixel_format == ALPHA) fprintf(file, "P2\n");
+    else       fprintf(file, "P5\n");
+
+    fprintf(file, "%d %d \n", img->cols, img->rows);
+    fprintf(file, "%d\n", img->maxval);
 
     if (pixel_format == ALPHA)
         for (int i=0; i < img->rows; i++)
             for (int j=0; j < img->cols ; j++)
-                printf("%d ", img->graymap[i * img->cols + j]);
+                fprintf(file, "%d ", img->graymap[i * img->cols + j]);
     else
         for (int i=0; i < img->rows; i++)
             for (int j=0; j < img->cols ; j++)
-                printf("%c",  img->graymap[i * img->cols + j]);
+                fprintf(file, "%c",  img->graymap[i * img->cols + j]);
 }
 
 void pgm_free(pgm_t* img) {
