@@ -1,10 +1,4 @@
-#######################################
-# Makefile PBM                        #
-#                                     #
-# E.B.                                #
-#######################################
-
-PROG_SRC=sobel.c
+PROG_SRC=main.c
 
 PROG_BIN=$(patsubst %.c,%, $(PROG_SRC))
 
@@ -17,7 +11,7 @@ LDFLAGS   =  -g -lm
 # Rules
 all : $(PROG_BIN)
 
-${PROG_BIN}: % : %.o Util.o pgm_io.o
+${PROG_BIN}: % : %.o Util.o pgm_io.o dbls.o
 
 clean :
 	@rm -f *.o
