@@ -19,9 +19,9 @@ public class WhileLang {
 
     public static void main(String[] args) throws IOException {
         run("examples/test0");
-        //run("examples/test1");
+        run("examples/test1");
         run("examples/test2");
-        //run("examples/test3");
+        run("examples/test3");
         //run("examples/test4");
         //run("examples/test5");
     }

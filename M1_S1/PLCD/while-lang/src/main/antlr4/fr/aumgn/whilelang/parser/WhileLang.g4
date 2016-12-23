@@ -24,12 +24,12 @@ statement
     ;
 
 expression
-	: operande=expression op=('*' | '/' | '%') right=expression # Multiplication
-	| operande=expression op=('+' | '-') right=expression # Addition
-	| operande=expression_operande op=('<' | '<=' | '>' | '>=') right=expression_operande # Comparison
-	| operande=expression op=('==' | '!=') right=expression # Equality
-	| operande=expression op='and' right=expression # Disjunction
-	| operande=expression op='or' right=expression # Conjunction
+	: left=expression op=('*' | '/' | '%') right=expression # Multiplication
+	| left=expression op=('+' | '-') right=expression # Addition
+	| left=expression_operande op=('<' | '<=' | '>' | '>=') right=expression_operande # Comparison
+	| left=expression op=('==' | '!=') right=expression # Equality
+	| left=expression op='and' right=expression # Disjunction
+	| left=expression op='or' right=expression # Conjunction
 	| expression_operande # Atom
 	;
 
