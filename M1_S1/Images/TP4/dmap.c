@@ -2,10 +2,6 @@
 #include <float.h>
 #include <limits.h>
 
-dmap_t* dmap_create_empty_from(pgm_t* src) {
-    return dmap_create_empty(src->cols, src->rows, src->maxval);
-}
-
 dmap_t* dmap_create_empty(int cols, int rows, int maxval) {
     dmap_t* dmap = malloc(sizeof(dmap_t));
     dmap->cols = cols;
@@ -14,6 +10,14 @@ dmap_t* dmap_create_empty(int cols, int rows, int maxval) {
     dmap->map = calloc(dmap->cols * dmap->rows, sizeof(double));
 
     return dmap;
+}
+
+dmap_t* dmap_create_empty_pgm(pgm_t* src) {
+    return dmap_create_empty(src->cols, src->rows, src->maxval);
+}
+
+dmap_t* dmap_create_empty_dmap(dmap_t* src) {
+    return dmap_create_empty(src->cols, src->rows, src->maxval);
 }
 
 dmap_t* dmap_from_pgm(pgm_t* pgm) {
@@ -34,7 +38,7 @@ dmap_t* dmap_copy(dmap_t* src) {
     return cpy;
 }
 
-pgm_t* dmap_to_pgm(dmap_t* dmap) {
+pgm_t* dmap_to_pgm(dmap_t* dmap, bool reverse) {
     pgm_t* pgm = pgm_create_empty(dmap->cols, dmap->rows, dmap->maxval);
 
     double min = DBL_MAX;
@@ -56,7 +60,8 @@ pgm_t* dmap_to_pgm(dmap_t* dmap) {
 
     for (int i=0; i < dmap->rows; i++) {
         for (int j=0; j < dmap->cols ; j++) {
-            PGM_AT(pgm, i, j) = (int) ((DBL_AT(dmap, i, j) - min) * dmap->maxval / (max - min));
+            int gray = (int) ((DBL_AT(dmap, i, j) - min) * dmap->maxval / (max - min));
+            PGM_AT(pgm, i, j) = reverse ? max - gray : gray;
         }
     }
 

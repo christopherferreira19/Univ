@@ -1,12 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <float.h>
 #include <string.h>
 #include <math.h>
 #include "pgm_io.h"
 #include "dmap.h"
 
 dmap_t* sobel_x(pgm_t* src) {
-    dmap_t* res = dmap_create_empty_from(src);
+    dmap_t* res = dmap_create_empty_pgm(src);
     for (int i = 1; i < res->rows - 1; i++) {
         for (int j = 1; j < res->cols - 1; j++) {
             double v1 = -PGM_AT(src, i-1, j-1);
@@ -24,7 +25,7 @@ dmap_t* sobel_x(pgm_t* src) {
 }
 
 dmap_t* sobel_y(pgm_t* src) {
-    dmap_t* res = dmap_create_empty_from(src);
+    dmap_t* res = dmap_create_empty_pgm(src);
     for (int i = 1; i < res->rows - 1; i++) {
         for (int j = 1; j < res->cols - 1; j++) {
             double v1 = -PGM_AT(src, i-1, j-1);
@@ -42,7 +43,7 @@ dmap_t* sobel_y(pgm_t* src) {
 }
 
 dmap_t* magnitude(pgm_t* src, dmap_t* gradx, dmap_t* grady) {
-    dmap_t* res = dmap_create_empty_from(src);
+    dmap_t* res = dmap_create_empty_pgm(src);
     for (int i = 0; i < res->rows; i++) {
         for (int j = 0; j < res->cols; j++) {
             double x = DBL_AT(gradx, i, j);
@@ -55,7 +56,7 @@ dmap_t* magnitude(pgm_t* src, dmap_t* gradx, dmap_t* grady) {
 }
 
 dmap_t* multiply(pgm_t* src, dmap_t* left, dmap_t* right) {
-    dmap_t* res = dmap_create_empty_from(src);
+    dmap_t* res = dmap_create_empty_pgm(src);
     for (int i = 0; i < res->rows; i++) {
         for (int j = 0; j < res->cols; j++) {
             double l = DBL_AT(left, i, j);
@@ -94,7 +95,7 @@ dmap_t* binomial_filter(dmap_t* src) {
 }
 
 dmap_t* harris(pgm_t* src, dmap_t* ixx, dmap_t* iyy, dmap_t* ixy, double alpha) {
-    dmap_t* res = dmap_create_empty_from(src);
+    dmap_t* res = dmap_create_empty_pgm(src);
     for (int i = 0; i < res->rows; i++) {
         for (int j = 0; j < res->cols; j++) {
             double xx = DBL_AT(ixx, i, j);
@@ -102,6 +103,7 @@ dmap_t* harris(pgm_t* src, dmap_t* ixx, dmap_t* iyy, dmap_t* ixy, double alpha) 
             double xy = DBL_AT(ixy, i, j);
             double det = xx * yy - xy * xy;
             double trace = (xx + yy) * (xx + yy);
+
             DBL_AT(res, i, j) = det - alpha * trace;
         }
     }
@@ -109,10 +111,73 @@ dmap_t* harris(pgm_t* src, dmap_t* ixx, dmap_t* iyy, dmap_t* ixy, double alpha) 
     return res;
 }
 
-void dmap_write(dmap_t* dmap, char* base, char* suffix) {
-    pgm_t* pgm = dmap_to_pgm(dmap);
+dmap_t* maxima(dmap_t* src, double n) {
+    double* maxima = calloc(n, sizeof(double));
+
+    for (int i = 0; i < src->rows; i++) {
+        for (int j = 0; j < src->cols; j++) {
+            double v = DBL_AT(src, i, j);
+            int i = 0;
+            while (i < n && v > maxima[i]) {
+                i++;
+            }
+
+            if (i > 0) {
+                maxima[i - 1] = v;
+            }
+        }
+    }
+
+    dmap_t* res = dmap_create_empty_dmap(src);
+    for (int i = 0; i < res->rows; i++) {
+        for (int j = 0; j < res->cols; j++) {
+            double v = DBL_AT(src, i, j);
+            if (v >= maxima[0]) {
+                DBL_AT(res, i, j) = v;
+            }
+        }
+    }
+
+    return res;
+}
+
+dmap_t* minima(dmap_t* src, double n) {
+    double* maxima = malloc(n * sizeof(double));
+    for (int i = 0; i < n; i++) {
+        maxima[i] = DBL_MIN;
+    }
+
+    for (int i = 0; i < src->rows; i++) {
+        for (int j = 0; j < src->cols; j++) {
+            double v = DBL_AT(src, i, j);
+            int i = 0;
+            while (i < n && v < maxima[i]) {
+                i++;
+            }
+
+            if (i > 0) {
+                maxima[i - 1] = v;
+            }
+        }
+    }
+
+    dmap_t* res = dmap_create_empty_dmap(src);
+    for (int i = 0; i < res->rows; i++) {
+        for (int j = 0; j < res->cols; j++) {
+            double v = DBL_AT(src, i, j);
+            if (v <= maxima[0]) {
+                DBL_AT(res, i, j) = v;
+            }
+        }
+    }
+
+    return res;
+}
+
+void dmap_write(dmap_t* dmap, bool reverse, char* base, char* suffix) {
+    pgm_t* pgm = dmap_to_pgm(dmap, reverse);
     pgm_write_filename(pgm, BINARY, base, suffix);
-    free(pgm);
+    pgm_free(pgm);
 }
 
 int main(int argc, char* argv[]) {
@@ -134,22 +199,36 @@ int main(int argc, char* argv[]) {
     dmap_t* myyf = binomial_filter(myy);
     dmap_t* mxyf = binomial_filter(mxy);
     dmap_t* harris1 = harris(src, mxxf, myyf, mxyf, 1);
-    dmap_t* harris1f = harris(src, mxxf, myyf, mxyf, 1);
 
-    dmap_write(sobx, argv[1], "sobel_x");
-    dmap_write(soby, argv[1], "sobel_y");
-    dmap_write(sobm, argv[1], "sobel_magnitude");
+    dmap_t* max[10];
+    for (int i = 1; i < 10; i++) {
+        max[i] = minima(harris1, i);
+    }
+    dmap_t* max10 = minima(harris1, 10);
+    dmap_t* max20 = minima(harris1, 20);
+    dmap_t* max30 = minima(harris1, 30);
 
-    dmap_write(mxx, argv[1], "xx");
-    dmap_write(myy, argv[1], "yy");
-    dmap_write(mxy, argv[1], "xy");
+    dmap_write(sobx, false, argv[1], "sobel_x");
+    dmap_write(soby, false, argv[1], "sobel_y");
+    dmap_write(sobm, false, argv[1], "sobel_magnitude");
 
-    dmap_write(mxxf, argv[1], "xxf");
-    dmap_write(myyf, argv[1], "yyf");
-    dmap_write(mxyf, argv[1], "xyf");
+    dmap_write(mxx, false, argv[1], "xx");
+    dmap_write(myy, false, argv[1], "yy");
+    dmap_write(mxy, false, argv[1], "xy");
 
-    dmap_write(harris1, argv[1], "harris1");
-    dmap_write(harris1f, argv[1], "harris1f");
+    dmap_write(mxxf, false, argv[1], "xxf");
+    dmap_write(myyf, false, argv[1], "yyf");
+    dmap_write(mxyf, false, argv[1], "xyf");
+
+    char buf[1024];
+    dmap_write(harris1, true, argv[1], "harris1");
+    for (int i = 1; i < 10; i++) {
+        sprintf(buf, "max%d", i);
+        dmap_write(max[i], true, argv[1], buf);
+    }
+    dmap_write(max10, true, argv[1], "max10");
+    dmap_write(max20, true, argv[1], "max20");
+    dmap_write(max30, true, argv[1], "max30");
 
     pgm_free(src);
     dmap_free(sobx);
@@ -158,7 +237,18 @@ int main(int argc, char* argv[]) {
     dmap_free(mxx);
     dmap_free(myy);
     dmap_free(mxy);
+    dmap_free(mxxf);
+    dmap_free(myyf);
+    dmap_free(mxyf);
+
     dmap_free(harris1);
+
+    for (int i = 1; i < 10; i++) {
+        dmap_free(max[i]);
+    }
+    dmap_free(max10);
+    dmap_free(max20);
+    dmap_free(max30);
 
     return 0;
 }
