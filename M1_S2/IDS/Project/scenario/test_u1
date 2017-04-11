@@ -1,0 +1,7 @@
+sleep
+call user2
+say hello
+move 4,4
+say I am back!
+disconnect
+exit

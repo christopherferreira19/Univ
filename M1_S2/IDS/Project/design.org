@@ -1,0 +1,54 @@
+#+TITLE: IDS Project Protocol Design
+#+AUTHOR: Christopher FERREIRA, Vincent XUEREB
+
+* Entités
+
+  + User > Receive message on a queue named "User#<name>"
+  + Region > Receive message on a queue named "Region#(<x>,<y>)"
+  + Registry > Receive message on a queue named "Registry#(<x>,<y>;<size>)"
+
+* Msg
+
+** Msg User -> Region
+
+   + user_connect(uid, queue_name)
+   + user_disconnect(uid?)
+
+   + call_request(uid src, uid dst)
+   + call_accept_ok()
+   + call_accept_ko()
+   + call_send(String msg)
+   + call_end()
+
+** Msg Region -> User
+
+   + call_accept()
+   + call_established()
+   + call_unavailable()
+   + call_receive(String msg)
+
+** Msg Region -> Region
+
+   + forward<call_established>
+   + forward<call_unavailable>
+   + forward<call_send>
+   + forward<call_end>
+
+** Msg Region -> Registry
+
+   + user_register(uid, coordinate)
+   + user_unregister(uid)
+   + user_lookup(uid)
+
+** Msg Registry -> Region
+
+   + user_found(uid, Coordinate)
+   + user_not_found(uid)
+
+** Msg Registry -> Registry
+
+  + user_register(uid, coordinate)
+  + user_unregister(uid)
+  + user_lookup(uid)
+  + user_found(uid, Coordinate)
+  + user_not_found(uid, Coordinate)

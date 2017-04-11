@@ -1,0 +1,32 @@
+package ids.msg;
+
+public enum MessageCode {
+
+    USER_CONNECT,
+    USER_DISCONNECT,
+    USER_REGISTER,
+    USER_UNREGISTER,
+    USER_LOOKUP,
+    USER_FOUND,
+    USER_NOT_FOUND,
+
+    CALL_REQUEST,
+    CALL_ACCEPT_OK,
+    CALL_ACCEPT_KO,
+    CALL_ACCEPT,
+    CALL_UNAVAILABLE,
+    CALL_ESTABLISHED,
+    CALL_SEND,
+    CALL_RECEIVE,
+    CALL_END,
+
+    FORWARD,
+
+    SEND_DATA,
+
+    MOVE,
+    MOVE_OK,
+    MOVE_KO,
+    MOVING,
+    MOVED
+}

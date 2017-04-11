@@ -1,0 +1,7 @@
+sleep
+sleep
+say hey
+move 6,6
+say still there ?
+disconnect
+exit
