@@ -1,0 +1,17 @@
+code/build/*
+code/bin/coff2noff
+code/bin/*.o
+code/bin/.*.d
+
+DISK
+
+.tags
+code/.tags
+
+test/log
+test/step*/out
+
+samples/*
+!samples/Makefile
+!samples/*.c
+build-origin

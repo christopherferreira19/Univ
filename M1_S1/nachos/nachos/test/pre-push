@@ -1,0 +1,15 @@
+#!/bin/sh
+
+cd test
+echo -e "\e[94m### Running test before push\e[39m"
+make USER_FLAVORS="step2 step3 step4 step5 step6 final"
+rc=$?
+cd ..
+
+if [[ $rc -ne 0 ]]; then
+    echo -e "\e[31mThere are some failing test, git push rejected !\e[39m"
+else
+    echo -e "\e[32mEverything is green ! Great, now pushing ...\e[39m"
+fi
+
+exit $rc
