@@ -1,0 +1,29 @@
+#+TITLE: Study of Linux CFS threads-to-core mapping - linear_regression case
+#+AUTHOR: Christopher FERREIRA
+
+This repository contains everything necessary to run the experiments.
+
+* Structure
+
+ + benchmark: Contains the source code of the benchmark application used for the experiments
+ + benchmark/linear_regression: So far, it only contains the application linear_regression
+     (pthread test version from the Phoenix Map-Reduce implementation version 2.0 https://github.com/kozyraki/phoenix/)
+     The folder benchmark/linear_regression.c also contains a fixed version `linear_regression-pthread-fixed.c` which fix the 
+     false sharing issue discovered.
+ + run.d: Boilerplate scripts to run the application (internally used by the run script)
+ + tools/PinThreads: The tool used for pinning threads to core
+ + Makefile: Run preparations for the experiments (compile benchmark/tools and download inputs)
+ + run: Script which run the experiments
+
+* Running the experiments
+
+#+BEGIN_SRC sh
+    git clone <this-repository-url>
+    cd <local-clone-folder>
+    make
+    ./run <application> <pinning|no-pinning> \
+        <\#cores> n <\#experiment>
+    # Example :
+    ./run linear_regression "pinning no-pinning" \
+        "16 32 48 64" n 30
+#+END_SRC

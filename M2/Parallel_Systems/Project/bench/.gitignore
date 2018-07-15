@@ -1,0 +1,8 @@
+tmp
+results
+perf.data
+perf.data.old
+benchmark/linear_regression/linear_regression-pthread
+benchmark/linear_regression/linear_regression-pthread-fixed
+benchmark/linear_regression/linear_regression-seq
+benchmark/linear_regression/*.o

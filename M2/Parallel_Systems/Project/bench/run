@@ -1,0 +1,246 @@
+#! /bin/bash
+
+set -e
+
+export PERF_EVENTS=${PERF_EVENTS:-"sched:sched_thread_placement,sched:sched_process_exit"}
+export PERF_BASE_PREFIX="perf record -a -c 1 -e $PERF_EVENTS"
+
+export PINTHREADS_PATH=tools/PinThreads
+export PINTHREADS_BIN=$PINTHREADS_PATH/pinthreads
+
+date=$(date +'%y.%m.%d-%H.%M.%S')
+export RESULTS_DIR=results/$date
+export RESULTS_LAST=results/last
+
+msg() {
+    if [[ $verbose == 'true' ]]; then
+        echo $@
+    fi
+}
+
+usage() {
+  cat <<HD
+Usage: $script [-v] <programs> <pinning> <threads> <use_perf> <repeat>
+     -v             toggle verbose mode
+
+     <programs>     list of programs to run
+     <pinning>      list of values among { cores, none }
+     <threads>      list of numbers of threads
+     <use_perf>     whether ('y') or not ('n') perf should be used
+     <repeat>       the number of time to run the application for each parameter combinations
+HD
+}
+
+prepare_bench() {
+    msg "# Preparing bench"
+    if [[ $verbose == 'true' ]]; then
+        make
+    else
+        if ! output=$(make); then
+            echo "!!! Make failed"
+	          echo "$output"
+	          exit 1
+	      fi
+    fi
+}
+
+prepare_programs() {
+    msg "# Preparing programs"
+
+    for program in $programs; do
+        source run.d/$program.sh
+	      prepare_$program
+    done
+}
+
+prepare_directories() {
+    msg "# Preparing directories"
+
+    mkdir -p $RESULTS_DIR
+    rm -rf $RESULTS_LAST
+    ln -s $PWD/$RESULTS_DIR $RESULTS_LAST
+}
+
+prepare_system() {
+    msg "# Preparing system"
+
+    sudo sysctl -w kernel.numa_balancing=0       >/dev/null
+    if sudo sysctl kernel.sched_schedstats >/dev/null 2>&1; then
+        sudo sysctl kernel.sched_schedstats=1 >/dev/null
+    fi
+}
+
+dump_system() {
+    msg "# Dumping system"
+
+    local system_dir=$RESULTS_DIR/system
+    local sched_features=/sys/kernel/debug/sched_features
+    mkdir -p $system_dir
+
+    sudo cat /etc/os-release >>$system_dir/os-release     2>/dev/null
+    sudo uname -a            >>$system_dir/uname          2>/dev/null
+    sudo cat /proc/cmdline   >>$system_dir/cmdline        2>/dev/null
+    sudo uptime              >>$system_dir/uptime         2>/dev/null
+    sudo mount               >>$system_dir/mount          2>/dev/null
+    sudo sysctl -a           >>$system_dir/sysctl         2>/dev/null
+    sudo cat $sched_features >>$system_dir/sched_features 2>/dev/null
+    sudo dpkg -l             >>$system_dir/packages       2>/dev/null
+    sudo systemctl           >>$system_dir/systemctl      2>/dev/null
+    sudo top -n1 -b          >>$system_dir/top            2>/dev/null
+    env                      >>$system_dir/env            2>/dev/null
+    sudo lscpu               >>$system_dir/topology       2>/dev/null
+    sudo hwloc-distances     >>$system_dir/topology       2>/dev/null
+}
+
+dump_versions() {
+    msg "# Dumping versions"
+
+    local version_file=$RESULTS_DIR/git-version
+    git rev-parse HEAD >>$version_file 2>/dev/null
+}
+
+dump_args() {
+    msg "# Dumping args"
+
+    local args_file=$RESULTS_DIR/args
+
+    echo "PROGRAM     = $programs"     >>$args_file
+    echo "PINNING     = $pinnings"     >>$args_file
+    echo "THREADS     = $threads_list" >>$args_file
+    echo "USE_PERF    = $use_perfs"    >>$args_file
+    echo "REPEAT      = $repeat"       >>$args_file
+    echo
+    echo "PERF_EVENTS = $PERF_EVENTS" >>$args_file
+}
+
+dump_programs() {
+    msg "# Dumping programs"
+
+    local dump_program_dir=$RESULTS_DIR/program
+    mkdir -p $dump_program_dir
+
+    for program in $programs; do
+        dump_$program
+    done
+}
+
+run_iterations() {
+    if [[ $pinning == 'cores' ]]; then
+        local pin_prefix="$PINTHREADS_BIN -c 0-$(($(nproc)-1))"
+    elif [[ $pinning == 'none' ]]; then
+        local pin_prefix=''
+    else
+        echo "Unknown pinning $pinning"
+        exit 34
+    fi
+
+    printf '[%14s][%6s][%2d][%s] ' $program $pinning $threads $use_perf
+
+    local exp_dir=$RESULTS_DIR/outputs/$program-$pinning-$threads-$use_perf
+
+    for iteration in $(seq 1 $repeat); do
+        local iteration_dir=$exp_dir/$iteration
+        mkdir -p $iteration_dir
+
+        local time_file=$iteration_dir/time
+        local time_prefix="/usr/bin/time -f%e -o $iteration_dir/time -a"
+
+        local perf_prefix=""
+        if [[ $use_perf == "y" ]]; then
+            perf_file="$iteration_dir/perf.data"
+            perf_prefix="$PERF_BASE_PREFIX -o $perf_file"
+        fi
+
+        local output=$iteration_dir/output
+        local errors=$iteration_dir/error
+
+        local cmd_prefix="$perf_prefix $time_prefix $memory_prefix $pin_prefix"
+        local cmd="$(command_$program "$cmd_prefix" "$threads")"
+        echo "#### sudo $cmd" >$iteration_dir/command
+
+        cat /proc/schedstat >$iteration_dir/schedstat.before
+        eval "sudo $cmd" 1>>$output 2>>$errors
+        echo "$?" >$iteration_dir/exit_status
+
+        cat /proc/schedstat >$iteration_dir/schedstat.after
+
+        printf '.'
+    done
+
+    avg=$(awk '{ sum += $1 } END { if (NR > 0) print sum / NR; else print NaN }' $exp_dir/*/time)
+    sd=$(awk '{ sum += $1; sum2 += $0^2 } END { print sqrt(abs(sum2 / NR - (sum/NR)^2)) } function abs(x){return ( x >= 0 ) ? x : -x }' $exp_dir/*/time)
+    printf ' | Avg: %6.2f  ~%3.2f\n' $avg $sd
+}
+
+run_all() {
+    msg "# Running exp"
+
+    for program in $programs; do
+    for pinning in $pinnings; do
+    for threads in $threads_list; do
+    for use_perf in $use_perfs; do
+        run_iterations
+    done
+    done
+    done
+    done
+}
+
+check_errors() {
+    msg "# Checking errors"
+
+    if grep -v 0 $RESULTS_DIR/outputs/*/*/exit_status; then
+        exit 1
+    fi
+
+    echo " => Results written in $RESULTS_DIR"
+}
+
+cleanup_system() {
+    if sysctl kernel.sched_schedstats >/dev/null 2>&1; then
+        sudo sysctl kernel.sched_schedstats=0 >/dev/null
+    fi
+}
+
+script=$0
+
+verbose=''
+while [[ $1 == -* ]]; do
+    case $1 in
+    -v)
+	    verbose=true
+	    shift
+	  ;;
+    *)
+	    echo "Unkown flag $0"
+	    usage
+	    exit 126
+	  ;;
+    esac
+done
+
+if [[ $# != 5 ]]; then
+    usage
+    exit 125
+fi
+
+programs=$1; shift
+pinnings=$1; shift
+threads_list=$1; shift
+use_perfs=$1; shift
+repeat=$1; shift
+
+prepare_bench
+prepare_directories
+prepare_system
+prepare_programs
+
+dump_system
+dump_versions
+dump_args
+dump_programs
+
+run_all
+check_errors
+
+cleanup_system

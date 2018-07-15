@@ -1,0 +1,12 @@
+PROGRAM     = lin_reg_fixed
+PINNING     = cores none
+THREADS     = 16
+24
+32
+40
+48
+56
+64
+USE_PERF    = n
+REPEAT      = 30
+PERF_EVENTS = sched:sched_thread_placement,sched:sched_process_exit

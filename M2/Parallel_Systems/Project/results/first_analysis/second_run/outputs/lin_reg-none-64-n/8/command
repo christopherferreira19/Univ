@@ -1,0 +1,1 @@
+#### sudo /usr/bin/time -f%e -o results/17.12.14-15.18.46/outputs/lin_reg-none-64-n/8/time -a benchmark/linear_regression/linear_regression-pthread tmp/lin_reg_inputs/key_file_3GB.txt 64

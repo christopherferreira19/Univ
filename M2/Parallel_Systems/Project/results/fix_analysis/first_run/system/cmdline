@@ -1,0 +1,1 @@
+BOOT_IMAGE=/boot/vmlinuz-4.9.9-wastedcores-1507116877.497726685 console=tty0 console=ttyS0,115200n8 rw net.ifnames=0 intel_pstate=disable numa_balancing=disable noautogroup sched_debug ignore_loglevel root=/dev/sdb1 rw

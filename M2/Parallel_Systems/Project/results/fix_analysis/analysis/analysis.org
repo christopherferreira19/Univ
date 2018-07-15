@@ -1,0 +1,147 @@
+#+TITLE: M2R Parallel System Project - Fix Analysis
+#+AUTHOR: Christopher FERREIRA
+
+* Time
+** Gather data
+
+#+BEGIN_SRC sh
+  export LANG=C
+
+  datafile=time.csv
+  rm -f $datafile
+
+  for exp in ../first_run/outputs/* ../../first_analysis/first_run/outputs/* ../../first_analysis/second_run/outputs/*; do
+      program=$(echo $(basename $exp) | cut -d'-' -f1)
+      pinning=$(echo $(basename $exp) | cut -d'-' -f2)
+      threads=$(echo $(basename $exp) | cut -d'-' -f3)
+
+      for iteration_dir in $exp/*; do
+          iteration=$(basename $iteration_dir)
+          time=$(tail -1 $iteration_dir/time)
+
+          printf '%s,%s,%d,%d,%f\n' \
+                 $program $pinning $threads $iteration \
+                 $time \
+                 >>$datafile
+      done
+  done
+
+  wc -l $datafile
+#+END_SRC
+
+#+RESULTS:
+: 1700 time.csv
+
+** R session
+   :PROPERTIES:
+   :colnames: yes
+   :session: *m2r_ps_17_first_analysis*
+   :unit: px
+   :END:
+
+*** Setup
+
+We first load the required libraries, loading the meta-package tidyverse
+gets us everything (most notably dplyr and ggplot2).
+
+#+BEGIN_SRC R :colnames no :results value verbatim
+  library('tidyverse')
+
+  'Ok !'
+#+END_SRC
+
+#+RESULTS:
+: Ok !
+
+Now we can load our data :
+#+BEGIN_SRC R
+  data <- read_csv('time.csv',
+          col_names = c('Program', 'Pinning', 'Threads', 'Iteration', 'Time'))
+  summary(data)
+#+END_SRC
+
+#+RESULTS:
+| Program          | Pinning          | Threads       | Iteration     | Time          |
+|------------------+------------------+---------------+---------------+---------------|
+| Length:1700      | Length:1700      | Min.   : 8.00 | Min.   : 1.00 | Min.   : 0.89 |
+| Class :character | Class :character | 1st Qu.:24.00 | 1st Qu.:10.00 | 1st Qu.: 5.30 |
+| Mode  :character | Mode  :character | Median :40.00 | Median :19.00 | Median :10.80 |
+| nil              | nil              | Mean   :36.99 | Mean   :20.21 | Mean   :14.41 |
+| nil              | nil              | 3rd Qu.:56.00 | 3rd Qu.:28.00 | 3rd Qu.:20.77 |
+| nil              | nil              | Max.   :64.00 | Max.   :50.00 | Max.   :62.68 |
+
+*** Distributions
+
+#+BEGIN_SRC R :results output graphics :width 1200 :height 800 :file time-distributions.png
+  data.normalized <- data %>%
+      group_by(Program, Pinning, Threads) %>%
+      mutate(
+          Time.min = min(Time),
+          Time.max = max(Time),
+          Time.normalized = (Time - Time.min) / (Time.max - Time.min)
+      )
+
+  data.normalized %>%
+      ggplot(aes(x = Time.normalized)) +
+      geom_histogram(binwidth = 0.2) +
+      facet_grid(Program + Pinning ~ Threads, scales = "free_x")
+#+END_SRC
+
+#+RESULTS:
+[[file:time-distributions.png]]
+
+*** Plot
+
+#+BEGIN_SRC R :results output graphics :width 900 :height 600 :file time-plot.png
+  CONFIDENCE <- 0.9999
+  SDEV_OVERESTIMATION_FACTOR <- 2
+  THREADS <- seq(16, 64, by = 8)
+
+  z <- qnorm(CONFIDENCE + (1 - CONFIDENCE) / 2)
+
+  data.plot <- data %>%
+      filter(Threads %in% THREADS)
+
+  data.mean <- data.plot %>%
+      group_by(Program, Pinning, Threads) %>%
+      summarise(
+          Time.mean  = mean(Time),
+          Time.sdev  = sd(Time) * SDEV_OVERESTIMATION_FACTOR,
+
+          Time.ci.error = z * Time.sdev / sqrt(n()),
+          Time.ci.lower = Time.mean - Time.ci.error,
+          Time.ci.upper = Time.mean + Time.ci.error
+      ) %>%
+      ungroup()
+
+  pinning_name <- 'Thread Mapping       '
+  pinning_colors <- c('#8ec43d', '#cd3f45', '#000000')
+  pinning_labels <- c(
+      'Static Round-Robin Thread Mapping         ',
+      'Dynamic Thread Mapping',
+      'Static Round-Robin Thread Mapping         ',
+      'Dynamic Thread Mapping - Fixed version'
+  )
+
+  ggplot(data.plot, aes(x = Threads, color = Pinning)) +
+      geom_jitter(aes(y = Time, alpha = Pinning), position = position_jitter(width = 3.2)) +
+      geom_errorbar(data = data.mean, aes(ymin = Time.ci.lower, ymax = Time.ci.upper), width=1) +
+      geom_point(data = data.mean, aes(y = Time.mean)) +
+      #geom_line(data = data.mean, aes(y = Time.mean)) +
+
+      scale_x_continuous(breaks = THREADS) +
+      scale_alpha_discrete(name = pinning_name, range = c(0.5, 0.5), labels = pinning_labels) +
+      scale_color_manual(name = pinning_name, values = pinning_colors, labels = pinning_labels) +
+      ggtitle("Comparison of Thread Mapping strategy with 99% confidence intervals (Lower is better)") +
+      ylim(0, max(data.plot$Time) + 0.2) +
+      xlab("Number of Threads") +
+      ylab("Execution Time (Wall-Clock) in seconds") +
+
+      theme_bw() +
+      theme(legend.position = "bottom")
+#+END_SRC
+
+#+RESULTS:
+[[file:time-plot.png]]
+
+

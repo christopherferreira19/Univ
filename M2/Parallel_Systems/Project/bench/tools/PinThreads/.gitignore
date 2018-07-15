@@ -1,0 +1,5 @@
+makefile.dep
+pinthreads
+tests/delayedthreads
+tests/multipleprocesses
+tests/testhooks

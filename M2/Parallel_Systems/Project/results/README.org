@@ -1,0 +1,14 @@
+#+TITLE: Study of Linux CFS threads-to-core mapping - linear_regression case
+#+AUTHOR: Christopher FERREIRA
+
+This repository contains the statistical analysis of the results obtained from the sibling repository `m2r_ps_17-bench`
+
+* Structure
+
+ + first_analysis: Contains everything related to the first series of experiments
+   The objective of these experiments was to produce a plot which could serve as a motivation/highlight of the problem investigated.
+ + first_analysis/first_run: First set of experiments results (Outputs of ./run command)
+ + first_analysis/second_run: Second set of experiments results (Outputs of ./run command)
+ + first_analysis/analysis: Folder containing the actual statistical analysis (analysis.org) and its outputs.
+ + fix_analysis: Contains everything related to the second series of experiments (once the problem investigated was discovered and fixed). Its statistical analysis was not completed
+

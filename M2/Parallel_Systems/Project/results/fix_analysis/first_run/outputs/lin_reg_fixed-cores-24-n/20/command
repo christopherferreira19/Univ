@@ -1,0 +1,1 @@
+#### sudo /usr/bin/time -f%e -o results/17.12.16-15.17.16/outputs/lin_reg_fixed-cores-24-n/20/time -a tools/PinThreads/pinthreads -c 0-63 benchmark/linear_regression/linear_regression-pthread-fixed tmp/lin_reg_inputs/key_file_3GB.txt 24

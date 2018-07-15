@@ -1,0 +1,15 @@
+The number of processors is 64
+The number of threads is 64
+
+Linear Regression P-Threads: Running...
+Linear Regression P-Threads Results:
+	a    = 54.463703
+	b    = 0.383518
+	xbar = 88.369367
+	ybar = 88.354943
+	r2   = 0.147116
+	SX   = 143808981342
+	SY   = 143785508040
+	SXX  = 15114179010606
+	SYY  = 15109547258700
+	SXY  = 13628928852240
