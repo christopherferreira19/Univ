@@ -1,0 +1,44 @@
+
+*******************************************************
+
+Cell: Garage    View: Automaton    Library: work
+
+*******************************************************
+
+
+ Cell          Library  References     Total Area
+
+AND2           PRIMITIVES    38 x      1     38 AND2
+DFFRS          PRIMITIVES     4 x      1      4 DFFRS
+FALSE          PRIMITIVES     1 x      1      1 FALSE
+INV            PRIMITIVES    20 x      1     20 INV
+OR2            PRIMITIVES    28 x      1     28 OR2
+TRUE           PRIMITIVES     1 x      1      1 TRUE
+decoder_2      OPERATORS      1 x      4      4 eq_2u_2u
+                                       1      1 TRUE
+                                       1      1 FALSE
+decoder_4      OPERATORS      1 x     16     16 eq_4u_4u
+                                       1      1 TRUE
+                                       1      1 FALSE
+mux_16u_16u    OPERATORS      4 x      1      4 mux_16u_16u
+select_3_3     OPERATORS      1 x      1      1 select_3_3
+select_4_4     OPERATORS      1 x      1      1 select_4_4
+
+ Number of ports :                      16
+ Number of nets :                      121
+ Number of instances :                 100
+ Number of references to this view :     0
+
+Total accumulated area : 
+ Black Box AND2 :                       38
+ Black Box DFFRS :                       4
+ Black Box FALSE :                       3
+ Black Box INV :                        20
+ Black Box OR2 :                        28
+ Black Box TRUE :                        3
+ Black Box eq_2u_2u :                    4
+ Black Box eq_4u_4u :                   16
+ Black Box mux_16u_16u :                 4
+ Black Box select_3_3 :                  1
+ Black Box select_4_4 :                  1
+ Number of accumulated instances :     100

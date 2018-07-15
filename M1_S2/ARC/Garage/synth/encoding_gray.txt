@@ -1,0 +1,15 @@
+Encodings for States values
+        value    States[3-0]
+============================
+        PowerUp  0000
+      PowerDown  0001
+          NoKey  0011
+    Deactivated  0010
+      Activated  0110
+           Down  0111
+             Up  0101
+     MovingOnUp  0100
+   MovingOnDown  1100
+    SafetyError  1101
+  SecurityError  1111
+

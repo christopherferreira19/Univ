@@ -1,0 +1,27 @@
+Coverage Report Summary Data by file
+
+=================================================================================
+=== File: /tp/xm1iarc/xm1iarc011/projet_asic/Garage/bench/testGarage.vhd
+=================================================================================
+    Enabled Coverage            Active      Hits    Misses % Covered
+    ----------------            ------      ----    ------ ---------
+    Stmts                           15        15         0     100.0
+    Branches                         0         0         0     100.0
+    FEC Expression Terms             0         0         0     100.0
+    FSMs                                                       100.0
+        States                       0         0         0     100.0
+        Transitions                  0         0         0     100.0
+
+=================================================================================
+=== File: /tp/xm1iarc/xm1iarc011/projet_asic/Garage/srcvhd/garage.vhd
+=================================================================================
+    Enabled Coverage            Active      Hits    Misses % Covered
+    ----------------            ------      ----    ------ ---------
+    Stmts                           45        28        17      62.2
+    Branches                        65        43        22      66.1
+    FEC Expression Terms             0         0         0     100.0
+    FSMs                                                        57.1
+        States                      11        10         1      90.9
+        Transitions                 47        11        36      23.4
+
+

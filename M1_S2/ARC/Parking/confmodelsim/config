@@ -1,0 +1,3 @@
+#!/bin/bash -f
+
+export MODELSIM=$HOME/projet_asic/Parking/confmodelsim/modelsim.ini

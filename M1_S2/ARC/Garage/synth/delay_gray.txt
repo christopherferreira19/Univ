@@ -1,0 +1,30 @@
+
+
+
+                        Clock Frequency Report
+
+	Clock                : Frequency
+      ------------------------------------
+
+	clk                  : N/A
+
+
+                        Critical Path Report
+
+Critical path #1, (unconstrained path)
+NAME                                         GATE              ARRIVAL              LOAD
+----------------------------------------------------------------------------------------
+command(1)/                                              0.00  0.00 up             0.00
+ix818/ix6/a(0)                               GENERIC_BLACK_BOX  0.00  0.00 up             0.00
+data arrival time                                              0.00
+
+
+data required time                                          not specified
+----------------------------------------------------------------------------------------
+data required time                                          not specified
+data arrival time                                              0.00
+                                                            ----------
+                                                         unconstrained path
+----------------------------------------------------------------------------------------
+
+
