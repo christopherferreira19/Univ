@@ -1,0 +1,33 @@
+\documentclass[10pt]{article}
+
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{INF246 - Christopher \textsc{Ferreira}}
+\rhead{Page \thepage/\pageref{LastPage}}
+
+\begin{document}
+
+\section{Lexique}
+
+\input{lexique.tex}
+\pagebreak
+
+\section{Grammaire}
+
+\input{grammaire.tex}
+\pagebreak
+
+\section{Sémantique}
+\input{semantique.tex}
+
+\section{Langage Intermédiaire \& ``Machine Virtuelle''}
+\input{vm.tex}
+
+\end{document}

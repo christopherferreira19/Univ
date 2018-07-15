@@ -1,0 +1,121 @@
+Après l'analyse sémantique et avant l'éxecution, le programme est compilé dans un
+langage intermédiaire semblable à un langage d'assemblage ou à un bytecode. Ce
+langage intermédiaire est ensuite interpreté par une ``machine virtuelle''
+fonctionnant sur une base de pile. (Plus exactement deux piles mais on aurait très
+bien pu se ramener à une unique pile).
+
+En effet, on peut grossièrement assimiler le langage intermédiaire à une transformation
+en notation postfixée du programme source facilement interpretable par une machine à pile.
+Par exemple l'expression :
+\begin{verbatim}
+x = 5 * 6 + 3
+\end{verbatim}
+transformée en un arbre syntaxique abstrait :
+\begin{verbatim}
+Affectation
+   x
+   Somme
+      Produit
+         5
+         6
+      3
+\end{verbatim}
+peut ensuite être compilée sous la forme
+\begin{verbatim}
+empiler 5
+empiler 6
+faire Produit
+empiler 3
+faire Somme
+depiler/stocker dans x
+\end{verbatim}
+en assumant que chaque opération (et par extension chaque fonction) prend
+ses arguments en sommet de pile et y met à la place sa valeur de retour.
+
+\hfill\break
+Le jeu d'instruction du langage intermédiaire/de la machine virtuelle est défini
+sur ce principe :
+\begin{description}
+   \item[EPL <valeur littéral>:] Met la <valeur littéral> au sommet de la pile d'appel
+   \item[DPL:] Dépile le sommet de la pile d'appel
+   \item[CHR <indice variable>:] Charge la variable à <indice variable> et sur la pile d'appel
+   \item[STK <indice variable>:] Stocker le sommet de la pile (en dépilant) à <indice variable>
+   \item[PRM <nom primitive>:] Met primitive <nom primitive> au sommet de la pile d'appel
+   \item[CLT <nom de la routine> {[$\sim$]}<nombre de variables à cloturer>:] Définition d'une fonction
+   mise au sommet de la pile d'appel
+   \item[STI <decalage>:] Saut inconditionnel
+   \item[STV <decalage>:] Saut si vrai dépilé de la pile d'appel
+   \item[STF <decalage>:] Saut si faux dépilé de la pile d'appel
+   \item[APP:] Appel de la fonction sur la pile
+   \item[RET:] Fin de la fonction en cours et retour à la fonction appelante
+\end{description}
+
+Pour representer le code des fonctions sous la forme de ce langage intermédiaire on
+utilise le concept de routine qui est la suite statique d'instructions d'une fonction.
+Les routines sont définies par un bloc commencant par le nom entre crochet suivi
+d'un nombre representant l'allocation nécessaire à la fonction.
+
+Une fonction est ainsi la donnée dynamique constituée d'une réference vers une
+routine et d'un ensemble de variables enfermées. Elles sont créées par l'instruction
+\textbf{CLT} qui associe ces deux composantes. Le caractère `$\sim$' devant le
+nombre de variables à capturer indique que la fonction est recursive.
+
+Les variables locales de chaque fonction sont representées par la deuxième pile
+fonctionnant par frame. Autrement dit, chaque fonction défini un nombre de variables
+locales dont elle a besoin (une allocation) et au moment de l'appel de la fonction
+la machine virtuelle déplace le curseur de la pile de la taille demandée et la fonction
+peut referencer ses variables en fonction d'indices determinés statiquement vers cette frame.
+
+L'argument des instructions de saut est défini en terme de nombre d'instructions de décalage
+par rapport à l'instruction de saut en elle-même. Elles sont suffisantes pour representer
+les trois structures de contrôle et les deux opérateurs paresseux `et' et `ou' (uniquement STV
+aurait même suffit).
+
+Le langage intermédiaire contient aussi des annotations informatives pour le nom des
+variables et les positions correspondantes du code source.
+
+\paragraph{Example de compilation}
+\begin{verbatim}
+   [] 4
+   EPL 1 @1:14
+   STK 0 &fact_borne @1:12
+   EPL 1 @2:15
+   STK 1 &fact_defaut @2:13
+   EPL 5 @3:13
+   STK 2 &fact_test @3:11
+   CHR 0 &fact_borne @5:8
+   CHR 1 &fact_defaut @5:8
+   CLT fact0 ~2 @5:8
+   STK 3 &fact @5:6
+   CHR 2 &fact_test @10:16
+   CHR 3 &fact @10:11
+   APP @10:15
+   PRM ecrire_ln @10:10
+   APP @10:10
+   EPL unit @1:1
+   RET @1:1
+
+   [fact0] 4
+   STK 3 &fact0 @5:8
+   STK 2 &fact_defaut @5:8
+   STK 1 &fact_borne @5:8
+   STK 0 &n @5:8
+   CHR 0 &n @6:7
+   CHR 1 &fact_borne @6:12
+   PRM inferieur_egale @6:9
+   APP @6:9
+   STF 4 @6:4
+   CHR 2 &fact_defaut @6:32
+   RET @6:25
+   STI 1 @6:4
+   CHR 0 &n @7:11
+   CHR 0 &n @7:20
+   EPL 1 @7:24
+   PRM moins @7:22
+   APP @7:22
+   CHR 3 &fact @7:15
+   APP @7:19
+   PRM multiplier @7:13
+   APP @7:13
+   RET @7:4
+\end{verbatim}

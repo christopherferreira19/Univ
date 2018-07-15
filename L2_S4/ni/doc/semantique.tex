@@ -1,0 +1,108 @@
+\subsection{Affectations}
+
+La gestion des affectations par le langage est extrêmement laxiste,
+il est possible d'affecter un entier à une variable puis de lui
+affecter une chaine de caractères plus loin voire de lui assigner deux
+valeurs de types différents dans deux branches alternatives de code.
+Néanmoins l'analyseur sémantique garde trace du type de chaque
+variable au fur et à mesure du flot du programme et effectue une
+vérification précise de la compatibilité entre les types des variables
+et leurs utilisations.
+
+\subsection{Fonction de première classe et fermeture}
+
+Le langage supporte la définition de nouvelles fonctions. De plus,
+ces fonctions sont de première classe (manipulables comme des
+valeurs au même titre qu'un entier ou une chaîne de caractères)
+et supporte le principe de fermeture (par portée lexicale). Elles
+sont définies exclusivement anonymement (ce n'est qu'en
+étant assignée à une variable qu'elles obtiennent un nom).
+La fermeture des variables au moment de la définition de la fonction
+est réalisée par `copie'. Autrement dit, les nouvelles affectations
+a posteriori de la variable enfermée n'affectent pas la fonction :
+\begin{verbatim}
+x = 1
+f = fn -> Entier {
+   retour x
+}
+
+x = 2
+assert(f() == 1)
+\end{verbatim}
+
+\subsection{Système de Type}
+Les types sont définis récursivement à partir des types de base.
+Les types de base sont les types concrets présents à l'exécution :
+\begin{description}
+   \item[Unit:] Type singleton de la valeur unit
+   \item[Vrai:] Type singleton de la valeur vrai
+   \item[Faux:] Type singleton de la valeur faux
+   \item[Entier:] Type des nombres entiers
+   \item[Flottant:] Type des nombres réels representés avec virgule flottante
+   \item[Chaine:] Type des chaînes de caractères
+\end{description}
+
+\hfill\break
+À partir de ces types peut être construit de nouveaux types
+avec les deux constructions suivantes :
+\begin{description}
+   \item[Union:] Etant donné deux types A et B leur union (notée `A|B')
+      représente un nouveau type. Dans la correspondance de Curry-Howard,
+      il represente le `ou' logique; ie. avec P(T) le prédicat associé à
+      un type T, on a ``P(A|B) $\iff$ P(A) $\cup$ P(B)''.
+   \item[Fonction:] Ce type est nécessaire pour representer les fonctions
+      qui sont de première classe. Il est notée Fn(Type\_Arg1, ...) -> Type\_Retour
+      et encode le nombre d'arguments, leur types et celui du retour de la fonction.
+\end{description}
+
+\hfill\break
+Pour raisonner quant au types des variables le langage utilise la 
+notion de généralisation. Un type A généralise un autre type B si
+toute valeur assignable au type B est assignable au type A.
+On remarque :
+\begin{itemize}
+   \item[$\bullet$] $\forall$A, A généralise A
+   \item[$\bullet$] $\forall$A,B, A|B généralise A et B
+   \item[$\bullet$] Fn(A1, ..., An) -> R généralise Fn(B1, ..., Bn) -> S
+      si et seulement si, $\forall$i, Bi généralise Ai et R généralise S.
+      (Notons l'inversion pour le type des arguments. Si l'on assimile le
+      type fonction à un type paramètrique, on retrouve le problème de la variance,
+      i.e: Une fonction est covariante en son type de retour et contravariante en 
+      les types de ses arguments)
+\end{itemize}
+
+\hfill\break
+A partir de ce principe de généralisation est défini un nouveau type, le type Tous
+qui est le type qui généralise tout les autres types. (Ou de manière équivalente, 
+le type qui est l'union de tous les autres types).
+
+\hfill\break
+Les déclarations de types ne sont nécessaires que dans les déclarations de fonctions.
+Tout les autres types peuvent être inférés à partir des valeurs littérales et des
+types des fonctions.
+
+\hfill\break
+\textbf{Problème des fonctions récursives :}
+Tel qu'est défini le langage les fonctions récursives posent problèmes. En effet,
+l'analyse sémantique est purement sequentielle et les fonctions n'ont un nom qu'après
+avoir été analysée (si elles sont assignées à une variable). Pour supporter les fonctions
+récursive l'analyseur est obligé de considérer le fait qu'une fonction est sur le
+point d'être affectée à une variable et de faire passer le nom de la variable en question
+à l'analyse de la fonction pour que cette dernière puissent reconnaitre les occurences
+d'appels recursifs. Une fonction peut ainsi être flaggée comme récursive et être
+considérée comme s'enfermant elle-même.
+Il faut noter que cette solution ne fonctionne pas pour les fonctions mutuellement
+récursives, par exemple :
+\begin{verbatim}
+pair = fn(n: Entier) -> Booleen {
+   si n == 0 { retour vrai }
+   retour impair(n - 1)
+}
+
+impair = fn(n: Entier) -> Booleen {
+   si n == 0 { retour faux }
+   retour pair(n - 1)
+}
+\end{verbatim}
+La première occurence de la variable `impair' induit une erreur car elle est considérée
+non définie par le compilateur.

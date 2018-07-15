@@ -1,0 +1,78 @@
+\subsection{``Atomes'' du langage}
+\begin{description}
+   \item[Unit:] \verb!`unit'!
+   \item[Vrai:] \verb!`vrai'!
+   \item[Faux:] \verb!`faux'!
+   \item[Entier:] \verb!`[0-9][0-9_]*'!
+   \item[Flottant:] \verb!`([0-9][0-9_]*)?\.[0-9_]*'!
+   \item[Chaine:] \verb!`"[\.]*"'!
+   \item[IdfMin:] \verb!`[a-z][a-zA-Z_]*'!
+\end{description}
+
+\subsection{Opérateurs}
+\begin{description}
+   \item[Et:] \verb!`et'!
+   \item[Ou:] \verb!`ou'!
+   \item[Egale:] \verb!`=='!
+   \item[Different:] \verb!`<>'!
+   \item[Inf:] \verb!`<'!
+   \item[InfEgale:] \verb!`<='!
+   \item[Sup:] \verb!`>'!
+   \item[SupEgale:] \verb!`>='!
+   \item[Plus:] \verb!`+'!
+   \item[Moins:] \verb!`-'!
+   \item[Mul:] \verb!`*'!
+   \item[Div:] \verb!`/'!
+   \item[Modulo:] \verb!`%'!
+\end{description}
+
+\subsection{Genre (Types)}
+\begin{description}
+   \item[Pipe:] \verb!`|'!
+   \item[Appli:] \verb!`->'!
+   \item[FnGenre:] \verb!`Fn'!
+   \item[IdfMaj:] \verb!`[A-Z][a-zA-Z_]*'!
+\end{description}
+
+\subsection{Affectations}
+\begin{description}
+   \item[Aff:] \verb!`='!
+   \item[Incr:] \verb!`++'!
+   \item[Decr:] \verb!`--'!
+   \item[AffPlus:] \verb!`+='!
+   \item[AffMoins:] \verb!`-='!
+   \item[AffMul:] \verb!`*='!
+   \item[AffDiv:] \verb!`/='!
+   \item[AffModulo:] \verb!`%='!
+\end{description}
+
+\subsection{Séparateurs \& Délimiteurs}
+\begin{description}
+   \item[ParO:] \verb!`('!
+   \item[ParF:] \verb!`)'!
+   \item[AccolO:] \verb!`{'!
+   \item[AccolF:] \verb!`}'!
+   \item[Comment:] \verb!`#'!
+   \item[Virgule:] \verb!`,'!
+   \item[DeuxPoints:] \verb!`:'!
+   \item[FinLigne:] \verb!`[\CR\LF]+'!
+\end{description}
+
+\subsection{Structure de contrôle}
+\begin{description}
+   \item[Fn:] \verb!`fn'!
+   \item[Retour:] \verb!`retour'!
+   \item[Si:] \verb!`si'!
+   \item[Sinon:] \verb!`sinon'!
+   \item[Tq:] \verb!`tq'!
+   \item[Boucle:] \verb!`boucle'!
+\end{description}
+
+\hfill\break
+\textbf{Remarques:}
+\begin{itemize}
+   \item[$\bullet$] En cas de `conflit de caractère' (eg: `<' et `<=') le lexer reconnait l'élément le plus long (ie: `<=')
+   \item[$\bullet$] Les mots-clés sont reconnus comme des identifiants dans un premier temps et distinguer a posteriori
+   \item[$\bullet$] Le lexer produit un lexème \textbf{ChaineNonFermee} le cas échéant
+   \item[$\bullet$] Le lexer produit un lexème \textbf{Erreur} pour tout caractère non reconnu
+\end{itemize}

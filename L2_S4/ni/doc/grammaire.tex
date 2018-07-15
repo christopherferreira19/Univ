@@ -1,0 +1,158 @@
+\subsection{Expression}
+
+\begin{description}
+   \item[Expression $\to$] Disj
+\end{description}
+\begin{description}
+   \item[Disj $\to$] Conj DisjSuite
+   \item[DisjSuite $\to$] `\emph{Ou}' Disj
+   \item[DisjSuite $\to$] `\emph{$\epsilon$}'
+\end{description}
+\begin{description}
+   \item[Conj $\to$] Rel ConjSuite
+   \item[ConjSuite $\to$] `\emph{Et}' Conj
+   \item[ConjSuite $\to$] `\emph{$\epsilon$}'
+\end{description}
+\begin{description}
+   \item[RelOpde $\to$] Somme
+   \item[Rel $\to$] RelOpde
+   \item[Rel $\to$] RelOpde `\emph{Egale}' RelOpde
+   \item[Rel $\to$] RelOpde `\emph{Different}' RelOpde
+   \item[Rel $\to$] RelOpde `\emph{Inf}' RelOpde
+   \item[Rel $\to$] RelOpde `\emph{InfEgale}' RelOpde
+   \item[Rel $\to$] RelOpde `\emph{Sup}' RelOpde
+   \item[Rel $\to$] RelOpde `\emph{SupEgale}' RelOpde
+\end{description}
+\begin{description}
+   \item[Somme $\to$] Terme SommeSuite
+   \item[SommeSuite $\to$] `\emph{Plus}' Somme
+   \item[SommeSuite $\to$] `\emph{Moins}' Somme
+   \item[SommeSuite $\to$] `\emph{$\epsilon$}'
+\end{description}
+\begin{description}
+   \item[Terme $\to$] Facteur TermeSuite
+   \item[TermeSuite $\to$] `\emph{Mul}' Terme
+   \item[TermeSuite $\to$] `\emph{Div}' Terme
+   \item[TermeSuite $\to$] `\emph{$\epsilon$}'
+\end{description}
+\begin{description}
+   \item[Facteur $\to$] Unaire Appel
+   \item[Appel $\to$] `\emph{ParO}' AppelArgs `\emph{ParF}' Appel
+   \item[Appel $\to$] `\emph{ParO}' `\emph{ParF}' Appel
+   \item[Appel $\to$] `\emph{$\epsilon$}'
+   \item[AppelArgs $\to$] Expression AppelArgsSuite
+   \item[AppelArgsSuite $\to$] `\emph{Virgule}' AppelArgs
+   \item[AppelArgsSuite $\to$] `\emph{$\epsilon$}'
+\end{description}
+\begin{description}
+   \item[Unaire $\to$] `\emph{Plus}' Unaire
+   \item[Unaire $\to$] `\emph{Moins}' Unaire
+   \item[Unaire $\to$] Atome
+\end{description}
+\begin{description}
+   \item[Atome $\to$] `\emph{ParO}' Expression `\emph{ParF}'
+   \item[Atome $\to$] `\emph{Unit}'
+   \item[Atome $\to$] `\emph{Vrai}'
+   \item[Atome $\to$] `\emph{Faux}'
+   \item[Atome $\to$] `\emph{Entier}'
+   \item[Atome $\to$] `\emph{Flottant}'
+   \item[Atome $\to$] `\emph{Chaine}'
+   \item[Atome $\to$] `\emph{IdfMin}'
+\end{description}
+\begin{description}
+   \item[Atome $\to$] `\emph{Fn}' FnArgs FnRetour Bloc
+   \item[FnArgs $\to$] `\emph{ParO}' FnArg FnArgsSuite `\emph{ParF}'
+   \item[FnArgs $\to$] `\emph{ParO}' `\emph{ParF}'
+   \item[FnArgs $\to$] `\emph{$\epsilon$}'
+   \item[FnArg $\to$] `\emph{IdfMin}' `\emph{DeuxPoints}' Genre
+   \item[FnArgSuite $\to$] `\emph{Virgule}' FnArg FnArgSuite
+   \item[FnArgSuite $\to$] `\emph{$\epsilon$}'
+   \item[FnRetour $\to$] `\emph{Appli}' Genre
+   \item[FnRetour $\to$] `\emph{$\epsilon$}
+\end{description}
+
+\subsection{Genre (Déclaration des types)}
+\begin{description}
+   \item[Genre $\to$] Union
+\end{description}
+\begin{description}
+   \item[Union $\to$] GenreTerme UnionSuite
+   \item[UnionSuite $\to$] `\emph{Pipe}' Union
+   \item[UnionSuite $\to$] `\emph{$\epsilon$}'
+\end{description}
+\begin{description}
+   \item[GenreTerme $\to$] GenreAtome
+\end{description}
+\begin{description}
+   \item[GenreAtome $\to$] `\emph{IdfMaj Tous}'
+   \item[GenreAtome $\to$] `\emph{IdfMaj Unit}'
+   \item[GenreAtome $\to$] `\emph{IdfMaj Vrai}'
+   \item[GenreAtome $\to$] `\emph{IdfMaj Faux}'
+   \item[GenreAtome $\to$] `\emph{IdfMaj Booleen}'
+   \item[GenreAtome $\to$] `\emph{IdfMaj Entier}'
+   \item[GenreAtome $\to$] `\emph{IdfMaj Flottant}'
+   \item[GenreAtome $\to$] `\emph{IdfMaj Nombre}'
+   \item[GenreAtome $\to$] `\emph{IdfMaj Chaine}'
+   \item[GenreAtome $\to$] `\emph{ParO}' Genre `\emph{ParF}'
+\end{description}
+\begin{description}
+   \item[GenreAtome $\to$] `\emph{FnGenre}' GenreFnArgs GenreFnRetour
+   \item[GenreFnArgs $\to$] `\emph{ParO}' Genre GenreFnArgsSuite `\emph{ParF}'
+   \item[GenreFnArgs $\to$] `\emph{ParO}' `\emph{ParF}'
+   \item[GenreFnArgs $\to$] `\emph{$\epsilon$}'
+   \item[GenreFnArgsSuite $\to$] `\emph{Virgule}' Genre GenreFnArgsSuite
+   \item[GenreFnRetour $\to$] `\emph{Appli}' Genre
+\end{description}
+
+\subsection{Instruction}
+\begin{description}
+   \item[Programme $\to$] Corps `\emph{FinSequence}'
+   \item[Bloc $\to$] `\emph{AccolO}' Corps `\emph{AccolF}'
+   \item[Corps $\to$] Instruction CorpsSuite
+   \item[CorpsSuite $\to$] Comment FinLigne Corps
+   \item[Comment $\to$] `\emph{Comment}' [Tous lèxemes sauf `\emph{FinLigne}']+
+   \item[CorpsSuite $\to$] `\emph{$\epsilon$}'
+\end{description}
+\begin{description}
+   \item[Instruction $\to$] Retour
+   \item[Instruction $\to$] Si
+   \item[Instruction $\to$] Sinon
+   \item[Instruction $\to$] Tq
+   \item[Instruction $\to$] Boucle
+   \item[Instruction $\to$] `\emph{Idf}' IdfInstruction
+   \item[Instruction $\to$] `\emph{FinLigne}'
+\end{description}
+\begin{description}
+   \item[Retour $\to$] `\emph{Retour}'
+   \item[Retour $\to$] `\emph{Retour}' Expression
+\end{description}
+\begin{description}
+   \item[Si $\to$] `\emph{Si}' Expression Bloc
+   \item[Sinon $\to$] `\emph{Sinon}' Si
+   \item[Sinon $\to$] `\emph{Sinon}' Bloc
+\end{description}
+\begin{description}
+   \item[Tq $\to$] `\emph{Tq}' Expression Bloc
+   \item[Boucle $\to$] `\emph{Boucle}' Bloc `\emph{Tq}' Expression
+\end{description}
+\begin{description}
+   \item[IdfInstruction $\to$] Appel
+   \item[IdfInstruction $\to$] `\emph{Aff}' Expression
+   \item[IdfInstruction $\to$] `\emph{Incr}'
+   \item[IdfInstruction $\to$] `\emph{Decr}'
+   \item[IdfInstruction $\to$] `\emph{AffPlus}' Expression
+   \item[IdfInstruction $\to$] `\emph{AffMoins}' Expression
+   \item[IdfInstruction $\to$] `\emph{AffMul}' Expression
+   \item[IdfInstruction $\to$] `\emph{AffDiv}' Expression
+   \item[IdfInstruction $\to$] `\emph{AffModulo}' Expression
+\end{description}
+
+\hfill\break
+\textbf{Remarques:}
+\begin{itemize}
+   \item[$\bullet$] Les fins de lignes à l'exception du cas où elles sont
+      rencontrées en fin d'instruction sont gérés en dehors de la grammaire.
+   \item[$\bullet$] La vérification qu'un sinon apparait à la suite d'un si
+      n'est pas géré par la définition de la grammaire mais comme un cas
+      particulier dans le code.
+\end{itemize}
